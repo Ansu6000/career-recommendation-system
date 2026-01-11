@@ -13,7 +13,7 @@ const Auth = () => {
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
     const [board, setBoard] = useState('CBSE');
-    const [grade, setGrade] = useState('10');
+    const [grade, setGrade] = useState('11');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [debugLogs, setDebugLogs] = useState([]); // Restore missing state
@@ -331,8 +331,6 @@ const Auth = () => {
                                             value={grade}
                                             onChange={(e) => setGrade(e.target.value)}
                                         >
-                                            <option value="9">Class 9</option>
-                                            <option value="10">Class 10</option>
                                             <option value="11">Class 11</option>
                                             <option value="12">Class 12</option>
                                         </select>

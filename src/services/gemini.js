@@ -35,7 +35,7 @@ export const generateCareerPath = async (userProfile, answers) => {
 
   // 3. Construct DETAILED Prompt for Child-Friendly Results
   const systemPrompt = `
-You are an expert Indian Career Counselor AI helping a young student (Class 9-12) understand their career options.
+You are an expert Indian Career Counselor AI helping a young student (Class 11-12) understand their career options.
 The student may have VERY LITTLE knowledge about careers, so your explanations must be SIMPLE, DETAILED, and ENCOURAGING.
 
 **About the Student:**
