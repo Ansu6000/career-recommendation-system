@@ -44,6 +44,9 @@ const AnimatedSection = ({ children, delay = 0, style = {} }) => {
     <div
       ref={ref}
       style={{
+        width: '100%',
+        maxWidth: '100%',
+        boxSizing: 'border-box',
         ...style,
         opacity: isVisible ? 1 : 0,
         transform: isVisible ? 'translateY(0)' : 'translateY(30px)',
@@ -121,9 +124,11 @@ const Welcome = () => {
           justifyContent: 'center',
           alignItems: 'center',
           textAlign: 'center',
-          padding: '0 24px',
+          padding: '0 16px',
           maxWidth: '900px',
-          margin: '0 auto'
+          width: '100%',
+          margin: '0 auto',
+          boxSizing: 'border-box'
         }}>
 
           <h1 className="animate-enter" style={{
@@ -132,7 +137,8 @@ const Welcome = () => {
             lineHeight: '1.1',
             marginBottom: '24px',
             letterSpacing: '-0.04em',
-            color: 'var(--text-main)'
+            color: 'var(--text-main)',
+            width: '100%'
           }}>
             Confused About <br />
             <span className="text-gradient">Your Career?</span>
@@ -143,7 +149,10 @@ const Welcome = () => {
             color: 'var(--text-secondary)',
             lineHeight: '1.7',
             marginBottom: '40px',
-            maxWidth: '550px'
+            width: '100%',
+            maxWidth: '550px',
+            padding: '0 8px',
+            boxSizing: 'border-box'
           }}>
             Answer 20 quick questions and get a personalized career roadmap
             with specific courses, exams, and resources for Indian students.
@@ -179,22 +188,34 @@ const Welcome = () => {
 
       {/* ============ FEATURES SECTION ============ */}
       <section id="features" style={{
-        padding: '100px 24px',
-        background: 'rgba(0,0,0,0.3)'
+        padding: '100px 16px',
+        background: 'rgba(0,0,0,0.3)',
+        width: '100%',
+        boxSizing: 'border-box',
+        overflowX: 'hidden'
       }}>
-        <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+        <div style={{ maxWidth: '1000px', margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
 
-          <AnimatedSection style={{ textAlign: 'center', marginBottom: '60px' }}>
+          <AnimatedSection style={{ textAlign: 'center', marginBottom: '60px', width: '100%' }}>
             <h2 style={{
               fontSize: '2rem',
               fontWeight: '800',
               marginBottom: '16px',
               color: 'var(--text-main)',
-              letterSpacing: '-0.02em'
+              letterSpacing: '-0.02em',
+              padding: '0 8px'
             }}>
               What You'll Get
             </h2>
-            <p style={{ fontSize: '1rem', color: 'var(--text-secondary)', maxWidth: '500px', margin: '0 auto', padding: '0 16px' }}>
+            <p style={{
+              fontSize: '1rem',
+              color: 'var(--text-secondary)',
+              margin: '0 auto',
+              padding: '0 8px',
+              width: '100%',
+              maxWidth: '100%',
+              boxSizing: 'border-box'
+            }}>
               Not generic advice. A complete blueprint personalized for you.
             </p>
           </AnimatedSection>
