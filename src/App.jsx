@@ -194,7 +194,7 @@ const Welcome = () => {
             }}>
               What You'll Get
             </h2>
-            <p style={{ fontSize: '1rem', color: 'var(--text-secondary)', maxWidth: '500px', margin: '0 auto' }}>
+            <p style={{ fontSize: '1rem', color: 'var(--text-secondary)', maxWidth: '500px', margin: '0 auto', padding: '0 16px' }}>
               Not generic advice. A complete blueprint personalized for you.
             </p>
           </AnimatedSection>
