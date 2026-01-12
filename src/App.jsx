@@ -92,15 +92,7 @@ const Welcome = () => {
       }}>
 
         {/* Navigation */}
-        <nav style={{
-          padding: '24px 40px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          maxWidth: '1200px',
-          width: '100%',
-          margin: '0 auto'
-        }}>
+        <nav className="nav-container">
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontWeight: '800', fontSize: '1.2rem', color: 'var(--text-main)' }}>
             <Zap size={24} color="var(--primary)" />
             <span>Pathwise</span>
@@ -208,11 +200,7 @@ const Welcome = () => {
           </AnimatedSection>
 
           {/* Features Grid */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: '24px'
-          }}>
+          <div className="features-grid">
 
             {/* Feature 1 */}
             <AnimatedSection delay={0.1}>
