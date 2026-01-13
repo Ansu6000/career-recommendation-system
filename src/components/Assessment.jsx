@@ -4,7 +4,8 @@ import { questions } from '../data/questions';
 import { generateCareerPath, getSmartFallback } from '../services/gemini';
 import { auth, db } from '../firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { ArrowRight, ArrowLeft, CheckCircle, ChevronDown } from 'lucide-react';
+import { ArrowRight, ArrowLeft, CheckCircle } from 'lucide-react';
+import CustomDropdown from './CustomDropdown';
 
 const Assessment = () => {
     const navigate = useNavigate();
@@ -187,22 +188,12 @@ const Assessment = () => {
                         <div key={q.id || index} className="animate-fade-in flex-column mb-8" style={{ animationDelay: `${index * 100}ms` }}>
                             <h3>{q.question}</h3>
 
-                            <div className="select-wrapper">
-                                <select
-                                    className="select-pill"
-                                    value={answers[q.id] || ""}
-                                    onChange={(e) => handleSelect(q.id, e.target.value)}
-                                    style={{ backgroundColor: '#0f172a', color: '#f1f5f9' }}
-                                >
-                                    <option value="" disabled style={{ backgroundColor: '#0f172a', color: '#64748b' }}>Select your answer...</option>
-                                    {q.options.map(opt => (
-                                        <option key={opt} value={opt} style={{ backgroundColor: '#0f172a', color: '#f1f5f9' }}>{opt}</option>
-                                    ))}
-                                </select>
-                                <div className="select-arrow">
-                                    <ChevronDown size={16} />
-                                </div>
-                            </div>
+                            <CustomDropdown
+                                value={answers[q.id] || ""}
+                                onChange={(value) => handleSelect(q.id, value)}
+                                options={q.options}
+                                placeholder="Select your answer..."
+                            />
                         </div>
                     ))}
                 </div>

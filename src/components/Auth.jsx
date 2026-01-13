@@ -3,7 +3,8 @@ import { auth, googleProvider, db } from '../firebase';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, sendEmailVerification, signOut, sendPasswordResetEmail } from 'firebase/auth';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
-import { Mail, Lock, User, BookOpen, GraduationCap, ArrowRight, PlayCircle } from 'lucide-react';
+import { Mail, Lock, User, ArrowRight } from 'lucide-react';
+import CustomDropdown from './CustomDropdown';
 
 const Auth = () => {
     const [isLogin, setIsLogin] = useState(true);
@@ -325,25 +326,25 @@ const Auth = () => {
                                     </div>
 
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '16px' }}>
-                                        <select
-                                            className="input-field"
-                                            style={{ padding: '0.875rem 1rem', backgroundColor: '#0f172a', color: '#f1f5f9' }}
+                                        <CustomDropdown
                                             value={grade}
-                                            onChange={(e) => setGrade(e.target.value)}
-                                        >
-                                            <option value="11" style={{ backgroundColor: '#0f172a', color: '#f1f5f9' }}>Class 11</option>
-                                            <option value="12" style={{ backgroundColor: '#0f172a', color: '#f1f5f9' }}>Class 12</option>
-                                        </select>
-                                        <select
-                                            className="input-field"
-                                            style={{ padding: '0.875rem 1rem', backgroundColor: '#0f172a', color: '#f1f5f9' }}
+                                            onChange={(value) => setGrade(value)}
+                                            options={[
+                                                { value: '11', label: 'Class 11' },
+                                                { value: '12', label: 'Class 12' }
+                                            ]}
+                                            placeholder="Select Class"
+                                        />
+                                        <CustomDropdown
                                             value={board}
-                                            onChange={(e) => setBoard(e.target.value)}
-                                        >
-                                            <option value="CBSE" style={{ backgroundColor: '#0f172a', color: '#f1f5f9' }}>CBSE</option>
-                                            <option value="ICSE" style={{ backgroundColor: '#0f172a', color: '#f1f5f9' }}>ICSE</option>
-                                            <option value="State" style={{ backgroundColor: '#0f172a', color: '#f1f5f9' }}>State</option>
-                                        </select>
+                                            onChange={(value) => setBoard(value)}
+                                            options={[
+                                                { value: 'CBSE', label: 'CBSE' },
+                                                { value: 'ICSE', label: 'ICSE' },
+                                                { value: 'State', label: 'State Board' }
+                                            ]}
+                                            placeholder="Select Board"
+                                        />
                                     </div>
                                 </>
                             )}
