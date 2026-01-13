@@ -63,6 +63,11 @@ const Welcome = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!auth) {
+      setUser(JSON.parse(localStorage.getItem('mockUser')));
+      return;
+    }
+
     const unsubscribe = auth.onAuthStateChanged(u => {
       if (u && u.emailVerified) {
         setUser(u);
@@ -70,11 +75,12 @@ const Welcome = () => {
         setUser(JSON.parse(localStorage.getItem('mockUser')));
       }
     });
+
     return () => unsubscribe();
   }, []);
 
   const handleLogout = () => {
-    auth.signOut();
+    if (auth) auth.signOut();
     localStorage.clear();
     setUser(null);
   };

@@ -102,7 +102,7 @@ const Assessment = () => {
 
         try {
             let userProfile = { name: "Student", board: "CBSE", grade: "10" };
-            const user = auth.currentUser;
+            const user = auth ? auth.currentUser : null;
 
             if (user) {
                 try {
