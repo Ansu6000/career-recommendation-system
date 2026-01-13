@@ -15,6 +15,7 @@ const Assessment = () => {
     const [answers, setAnswers] = useState({});
     const [loading, setLoading] = useState(false);
     const [loadingMsg, setLoadingMsg] = useState("Initializing AI Analysis...");
+    const [activeDropdownId, setActiveDropdownId] = useState(null); // Fix overlap issues
 
     const questionsPerPage = 5;
 
@@ -184,18 +185,31 @@ const Assessment = () => {
 
                 {/* Question List */}
                 <div style={{ width: '100%' }}>
-                    {currentQuestions.map((q, index) => (
-                        <div key={q.id || index} className="animate-fade-in flex-column mb-8" style={{ animationDelay: `${index * 100}ms` }}>
-                            <h3>{q.question}</h3>
+                    {currentQuestions.map((q, index) => {
+                        const isDropdownOpen = activeDropdownId === q.id;
+                        return (
+                            <div
+                                key={q.id || index}
+                                className="animate-fade-in flex-column mb-8"
+                                style={{
+                                    animationDelay: `${index * 100}ms`,
+                                    zIndex: isDropdownOpen ? 1000 : 1, // Fix stacking context
+                                    position: 'relative'
+                                }}
+                            >
+                                <h3>{q.question}</h3>
 
-                            <CustomDropdown
-                                value={answers[q.id] || ""}
-                                onChange={(value) => handleSelect(q.id, value)}
-                                options={q.options}
-                                placeholder="Select your answer..."
-                            />
-                        </div>
-                    ))}
+                                <CustomDropdown
+                                    value={answers[q.id] || ""}
+                                    onChange={(value) => handleSelect(q.id, value)}
+                                    options={q.options}
+                                    placeholder="Select your answer..."
+                                    isOpen={isDropdownOpen}
+                                    onToggle={(val) => setActiveDropdownId(val ? q.id : null)}
+                                />
+                            </div>
+                        );
+                    })}
                 </div>
 
                 {/* Footer Controls */}

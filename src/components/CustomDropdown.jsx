@@ -10,16 +10,28 @@ const CustomDropdown = ({
     onChange,
     options,
     placeholder = "Select an option...",
-    disabled = false
+    disabled = false,
+    isOpen: controlledIsOpen, // Optional controlled state
+    onToggle // Optional callback for controlled state
 }) => {
-    const [isOpen, setIsOpen] = useState(false);
+    const [localIsOpen, setLocalIsOpen] = useState(false);
+    const isOpen = controlledIsOpen !== undefined ? controlledIsOpen : localIsOpen;
+
+    const toggleOpen = (newState) => {
+        const nextState = typeof newState === 'boolean' ? newState : !isOpen;
+        if (controlledIsOpen !== undefined) {
+            if (onToggle) onToggle(nextState);
+        } else {
+            setLocalIsOpen(nextState);
+        }
+    };
     const dropdownRef = useRef(null);
 
     // Close dropdown when clicking outside
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-                setIsOpen(false);
+                toggleOpen(false);
             }
         };
 
@@ -31,7 +43,7 @@ const CustomDropdown = ({
     useEffect(() => {
         const handleEscape = (event) => {
             if (event.key === 'Escape') {
-                setIsOpen(false);
+                toggleOpen(false);
             }
         };
 
@@ -41,7 +53,7 @@ const CustomDropdown = ({
 
     const handleSelect = (option) => {
         onChange(option);
-        setIsOpen(false);
+        toggleOpen(false);
     };
 
     // Find the selected option's label (handles both string options and object options)
@@ -70,12 +82,13 @@ const CustomDropdown = ({
                 position: 'relative',
                 width: '100%',
                 colorScheme: 'dark',
+                zIndex: isOpen ? 100 : 1, // Dynamically lift container when open
             }}
         >
             {/* Trigger Button */}
             <button
                 type="button"
-                onClick={() => !disabled && setIsOpen(!isOpen)}
+                onClick={() => !disabled && toggleOpen(!isOpen)}
                 disabled={disabled}
                 className="custom-dropdown-trigger"
                 style={{
@@ -133,15 +146,16 @@ const CustomDropdown = ({
                         top: 'calc(100% + 4px)',
                         left: 0,
                         right: 0,
-                        backgroundColor: 'var(--dropdown-bg, #0f172a)',
-                        border: '1px solid rgba(255, 255, 255, 0.1)',
+                        backgroundColor: '#0f172a', // Enjoined solid background
+                        border: '1px solid rgba(255, 255, 255, 0.15)',
                         borderRadius: '12px',
-                        boxShadow: '0 20px 40px -10px rgba(0, 0, 0, 0.5)',
-                        zIndex: 1000,
+                        boxShadow: '0 10px 40px rgba(0,0,0,0.8)', // Stronger shadow
+                        zIndex: 9999, // Ensure it's on top
                         maxHeight: '250px',
                         overflowY: 'auto',
                         animation: 'dropdownFadeIn 0.15s ease-out',
                         colorScheme: 'dark',
+                        backdropFilter: 'blur(20px)',
                     }}
                 >
                     {options.map((option, index) => {
