@@ -28,6 +28,12 @@
   --radius-md: 12px;
 
   --shadow-ambient: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
+
+  /* Dropdown / Select variables for cross-platform consistency */
+  --dropdown-bg: #0f172a;
+  --dropdown-bg-hover: rgba(96, 165, 250, 0.15);
+  --dropdown-text: #f1f5f9;
+  --dropdown-text-disabled: #64748b;
 }
 
 *,
@@ -277,30 +283,88 @@ p {
   color: var(--primary);
 }
 
-/* Fix for select dropdowns using input-field class - dark mode options */
-select.input-field {
+/* ============================================= */
+/* UNIVERSAL SELECT/DROPDOWN STYLING            */
+/* Cross-platform: Windows, macOS, Linux        */
+/* Cross-browser: Chrome, Firefox, Safari, Edge */
+/* ============================================= */
+
+/* Universal base styling for ALL select elements */
+select {
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  background-color: rgba(15, 23, 42, 0.95);
+  background-color: var(--dropdown-bg) !important;
+  color: var(--dropdown-text) !important;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Universal option styling - critical for cross-platform consistency */
+select option {
+  background-color: var(--dropdown-bg) !important;
+  color: var(--dropdown-text) !important;
+  padding: 12px 16px;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+/* Disabled option styling */
+select option:disabled {
+  background-color: var(--dropdown-bg) !important;
+  color: var(--dropdown-text-disabled) !important;
+}
+
+/* Hover, focus, and selected option states */
+select option:hover,
+select option:focus,
+select option:checked {
+  background-color: var(--dropdown-bg-hover) !important;
+  color: var(--dropdown-text) !important;
+}
+
+/* Focus state for select element */
+select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 1px var(--primary), 0 0 20px var(--primary-dim);
+}
+
+/* Hover state for select element */
+select:hover {
+  border-color: var(--text-secondary);
+}
+
+/* Fix for select dropdowns using input-field class - dark mode options */
+select.input-field {
+  padding-right: 2.5rem;
+  /* Custom dropdown arrow for input-field selects (Auth page) */
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 1rem center;
-  padding-right: 2.5rem;
-  cursor: pointer;
 }
 
 select.input-field option {
-  background-color: #0f172a;
-  color: var(--text-main);
+  background-color: var(--dropdown-bg) !important;
+  color: var(--dropdown-text) !important;
   padding: 12px 16px;
+  font-size: 1rem;
+}
+
+select.input-field option:disabled {
+  background-color: var(--dropdown-bg) !important;
+  color: var(--dropdown-text-disabled) !important;
 }
 
 select.input-field option:hover,
 select.input-field option:focus,
 select.input-field option:checked {
-  background-color: var(--primary-dim);
-  color: var(--text-main);
+  background-color: var(--dropdown-bg-hover) !important;
+  color: var(--dropdown-text) !important;
 }
 
 /* --- Select Styling --- */
@@ -312,37 +376,33 @@ select.input-field option:checked {
 
 .select-pill {
   width: 100%;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  background-color: rgba(15, 23, 42, 0.95);
-  border: 1px solid var(--glass-border);
   padding: 1rem 1.5rem;
-  border-radius: var(--radius-md);
-  font-size: 1rem;
-  color: var(--text-main);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-family: inherit;
+  padding-right: 3rem;
 }
 
 /* Fix for dropdown options on Windows/Desktop - dark mode */
 .select-pill option {
-  background-color: #0f172a;
-  color: var(--text-main);
+  background-color: var(--dropdown-bg) !important;
+  color: var(--dropdown-text) !important;
   padding: 12px 16px;
+  font-size: 1rem;
+}
+
+.select-pill option:disabled {
+  background-color: var(--dropdown-bg) !important;
+  color: var(--dropdown-text-disabled) !important;
 }
 
 .select-pill option:hover,
 .select-pill option:focus,
 .select-pill option:checked {
-  background-color: var(--primary-dim);
-  color: var(--text-main);
+  background-color: var(--dropdown-bg-hover) !important;
+  color: var(--dropdown-text) !important;
 }
 
 .select-pill:hover,
 .select-pill:focus {
-  background-color: rgba(15, 23, 42, 1);
+  background-color: var(--dropdown-bg) !important;
   border-color: var(--text-secondary);
   outline: none;
 }

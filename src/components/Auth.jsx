@@ -327,22 +327,22 @@ const Auth = () => {
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '16px' }}>
                                         <select
                                             className="input-field"
-                                            style={{ padding: '0.875rem 1rem' }}
+                                            style={{ padding: '0.875rem 1rem', backgroundColor: '#0f172a', color: '#f1f5f9' }}
                                             value={grade}
                                             onChange={(e) => setGrade(e.target.value)}
                                         >
-                                            <option value="11">Class 11</option>
-                                            <option value="12">Class 12</option>
+                                            <option value="11" style={{ backgroundColor: '#0f172a', color: '#f1f5f9' }}>Class 11</option>
+                                            <option value="12" style={{ backgroundColor: '#0f172a', color: '#f1f5f9' }}>Class 12</option>
                                         </select>
                                         <select
                                             className="input-field"
-                                            style={{ padding: '0.875rem 1rem' }}
+                                            style={{ padding: '0.875rem 1rem', backgroundColor: '#0f172a', color: '#f1f5f9' }}
                                             value={board}
                                             onChange={(e) => setBoard(e.target.value)}
                                         >
-                                            <option value="CBSE">CBSE</option>
-                                            <option value="ICSE">ICSE</option>
-                                            <option value="State">State</option>
+                                            <option value="CBSE" style={{ backgroundColor: '#0f172a', color: '#f1f5f9' }}>CBSE</option>
+                                            <option value="ICSE" style={{ backgroundColor: '#0f172a', color: '#f1f5f9' }}>ICSE</option>
+                                            <option value="State" style={{ backgroundColor: '#0f172a', color: '#f1f5f9' }}>State</option>
                                         </select>
                                     </div>
                                 </>

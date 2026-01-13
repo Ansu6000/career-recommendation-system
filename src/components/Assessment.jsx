@@ -192,10 +192,11 @@ const Assessment = () => {
                                     className="select-pill"
                                     value={answers[q.id] || ""}
                                     onChange={(e) => handleSelect(q.id, e.target.value)}
+                                    style={{ backgroundColor: '#0f172a', color: '#f1f5f9' }}
                                 >
-                                    <option value="" disabled>Select your answer...</option>
+                                    <option value="" disabled style={{ backgroundColor: '#0f172a', color: '#64748b' }}>Select your answer...</option>
                                     {q.options.map(opt => (
-                                        <option key={opt} value={opt}>{opt}</option>
+                                        <option key={opt} value={opt} style={{ backgroundColor: '#0f172a', color: '#f1f5f9' }}>{opt}</option>
                                     ))}
                                 </select>
                                 <div className="select-arrow">
