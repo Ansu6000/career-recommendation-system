@@ -23,6 +23,7 @@ const CustomDropdown = ({
             if (onToggle) onToggle(nextState);
         } else {
             setLocalIsOpen(nextState);
+            if (onToggle) onToggle(nextState);
         }
     };
     const dropdownRef = useRef(null);
@@ -35,8 +36,8 @@ const CustomDropdown = ({
             }
         };
 
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
+        document.addEventListener('click', handleClickOutside);
+        return () => document.removeEventListener('click', handleClickOutside);
     }, []);
 
     // Close on escape key
@@ -167,7 +168,10 @@ const CustomDropdown = ({
                         return (
                             <div
                                 key={optionValue || index}
-                                onClick={() => !isDisabled && handleSelect(optionValue)}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (!isDisabled) handleSelect(optionValue);
+                                }}
                                 style={{
                                     padding: '12px 16px',
                                     color: isDisabled ? 'var(--dropdown-text-disabled, #64748b)' : 'var(--dropdown-text, #f1f5f9)',

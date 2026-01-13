@@ -186,14 +186,13 @@ const Assessment = () => {
                 {/* Question List */}
                 <div style={{ width: '100%' }}>
                     {currentQuestions.map((q, index) => {
-                        const isDropdownOpen = activeDropdownId === q.id;
                         return (
                             <div
                                 key={q.id || index}
                                 className="animate-fade-in flex-column mb-8"
                                 style={{
                                     animationDelay: `${index * 100}ms`,
-                                    zIndex: isDropdownOpen ? 1000 : 1, // Fix stacking context
+                                    zIndex: 50 - index, // Static stacking: Earlier questions strictly above later ones
                                     position: 'relative'
                                 }}
                             >
@@ -204,8 +203,6 @@ const Assessment = () => {
                                     onChange={(value) => handleSelect(q.id, value)}
                                     options={q.options}
                                     placeholder="Select your answer..."
-                                    isOpen={isDropdownOpen}
-                                    onToggle={(val) => setActiveDropdownId(val ? q.id : null)}
                                 />
                             </div>
                         );
