@@ -3,6 +3,7 @@
 
 :root {
   /* Cinematic Dark Theme */
+  color-scheme: dark;
   --bg-dark: #050505;
 
   /* Primary Accent: Steel Blue / Cyan */
@@ -632,6 +633,29 @@ select.input-field option:checked {
   margin-top: 3rem;
   padding-top: 2rem;
   border-top: 1px solid var(--glass-border);
+}
+
+/* --- Divider for Auth --- */
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.divider::before {
+  margin-right: 12px;
+}
+
+.divider::after {
+  margin-left: 12px;
 }
 
 .spinner {

@@ -290,19 +290,19 @@ const Auth = () => {
 
 
 
-                        <div className="divider" style={{ margin: '24px 0', color: '#9ca3af', fontSize: '0.8rem', fontWeight: '600' }}>
-                            <span style={{ background: 'white', padding: '0 10px', position: 'relative', zIndex: 1 }}>OR EMAIL</span>
+                        <div className="divider" style={{ margin: '24px 0', color: 'var(--text-muted)', fontSize: '0.8rem', fontWeight: '600' }}>
+                            <span style={{ background: 'var(--glass-bg)', padding: '0 16px', position: 'relative', zIndex: 1, backdropFilter: 'blur(12px)', borderRadius: '4px' }}>OR EMAIL</span>
                         </div>
 
                         {error && (
-                            <div style={{ background: '#fef2f2', color: '#b91c1c', padding: '16px', borderRadius: '8px', marginBottom: '20px', fontSize: '0.9rem', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center' }}>
-                                <span style={{ fontWeight: 'bold' }}>{error}</span>
+                            <div style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', color: '#f87171', padding: '16px', borderRadius: '12px', marginBottom: '20px', fontSize: '0.9rem', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center' }}>
+                                <span style={{ fontWeight: '600' }}>{error}</span>
 
                                 {showResend && (
                                     <button
                                         onClick={handleResendVerification}
                                         className="btn-primary"
-                                        style={{ background: '#2563eb', border: 'none', padding: '8px 16px', fontSize: '0.85rem' }}
+                                        style={{ background: 'var(--primary)', color: '#050505', border: 'none', padding: '8px 16px', fontSize: '0.85rem' }}
                                     >
                                         <Mail size={14} style={{ marginRight: '6px' }} /> Resend Verification Link
                                     </button>
