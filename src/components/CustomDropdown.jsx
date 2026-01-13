@@ -69,6 +69,7 @@ const CustomDropdown = ({
             style={{
                 position: 'relative',
                 width: '100%',
+                colorScheme: 'dark',
             }}
         >
             {/* Trigger Button */}
@@ -80,10 +81,10 @@ const CustomDropdown = ({
                 style={{
                     width: '100%',
                     padding: '1rem 3rem 1rem 1.5rem',
-                    backgroundColor: '#0f172a',
-                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                    backgroundColor: 'var(--dropdown-bg, #0f172a)',
+                    border: '1px solid var(--dropdown-border, rgba(255, 255, 255, 0.08))',
                     borderRadius: '12px',
-                    color: isPlaceholder ? '#64748b' : '#f1f5f9',
+                    color: isPlaceholder ? 'var(--dropdown-text-disabled, #64748b)' : 'var(--dropdown-text, #f1f5f9)',
                     fontSize: '1rem',
                     fontFamily: 'inherit',
                     textAlign: 'left',
@@ -91,13 +92,17 @@ const CustomDropdown = ({
                     transition: 'all 0.2s ease',
                     outline: 'none',
                     opacity: disabled ? 0.6 : 1,
+                    colorScheme: 'dark',
+                    WebkitAppearance: 'none',
+                    MozAppearance: 'none',
+                    appearance: 'none',
                 }}
                 onFocus={(e) => {
-                    e.target.style.borderColor = '#60a5fa';
-                    e.target.style.boxShadow = '0 0 0 1px #60a5fa, 0 0 20px rgba(96, 165, 250, 0.15)';
+                    e.target.style.borderColor = 'var(--dropdown-border-active, #60a5fa)';
+                    e.target.style.boxShadow = '0 0 0 1px var(--dropdown-border-active, #60a5fa), 0 0 20px rgba(96, 165, 250, 0.15)';
                 }}
                 onBlur={(e) => {
-                    e.target.style.borderColor = 'rgba(255, 255, 255, 0.08)';
+                    e.target.style.borderColor = 'var(--dropdown-border, rgba(255, 255, 255, 0.08))';
                     e.target.style.boxShadow = 'none';
                 }}
             >
@@ -112,7 +117,7 @@ const CustomDropdown = ({
                     top: '50%',
                     transform: `translateY(-50%) rotate(${isOpen ? '180deg' : '0deg'})`,
                     pointerEvents: 'none',
-                    color: '#94a3b8',
+                    color: 'var(--text-secondary, #94a3b8)',
                     transition: 'transform 0.2s ease',
                 }}
             >
@@ -128,7 +133,7 @@ const CustomDropdown = ({
                         top: 'calc(100% + 4px)',
                         left: 0,
                         right: 0,
-                        backgroundColor: '#0f172a',
+                        backgroundColor: 'var(--dropdown-bg, #0f172a)',
                         border: '1px solid rgba(255, 255, 255, 0.1)',
                         borderRadius: '12px',
                         boxShadow: '0 20px 40px -10px rgba(0, 0, 0, 0.5)',
@@ -136,6 +141,7 @@ const CustomDropdown = ({
                         maxHeight: '250px',
                         overflowY: 'auto',
                         animation: 'dropdownFadeIn 0.15s ease-out',
+                        colorScheme: 'dark',
                     }}
                 >
                     {options.map((option, index) => {
@@ -150,13 +156,14 @@ const CustomDropdown = ({
                                 onClick={() => !isDisabled && handleSelect(optionValue)}
                                 style={{
                                     padding: '12px 16px',
-                                    color: isDisabled ? '#64748b' : '#f1f5f9',
-                                    backgroundColor: isSelected ? 'rgba(96, 165, 250, 0.15)' : 'transparent',
+                                    color: isDisabled ? 'var(--dropdown-text-disabled, #64748b)' : 'var(--dropdown-text, #f1f5f9)',
+                                    backgroundColor: isSelected ? 'var(--dropdown-bg-hover, rgba(96, 165, 250, 0.15))' : 'transparent',
                                     cursor: isDisabled ? 'not-allowed' : 'pointer',
                                     transition: 'background-color 0.15s ease',
                                     borderBottom: index < options.length - 1 ? '1px solid rgba(255, 255, 255, 0.05)' : 'none',
                                     fontSize: '1rem',
                                     fontFamily: 'inherit',
+                                    colorScheme: 'dark',
                                 }}
                                 onMouseEnter={(e) => {
                                     if (!isDisabled && !isSelected) {
@@ -165,7 +172,7 @@ const CustomDropdown = ({
                                 }}
                                 onMouseLeave={(e) => {
                                     if (!isDisabled) {
-                                        e.target.style.backgroundColor = isSelected ? 'rgba(96, 165, 250, 0.15)' : 'transparent';
+                                        e.target.style.backgroundColor = isSelected ? 'var(--dropdown-bg-hover, rgba(96, 165, 250, 0.15))' : 'transparent';
                                     }
                                 }}
                             >

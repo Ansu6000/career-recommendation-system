@@ -34,6 +34,8 @@
   --dropdown-bg-hover: rgba(96, 165, 250, 0.15);
   --dropdown-text: #f1f5f9;
   --dropdown-text-disabled: #64748b;
+  --dropdown-border: rgba(255, 255, 255, 0.08);
+  --dropdown-border-active: #60a5fa;
 }
 
 *,
@@ -56,6 +58,49 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* ============================================= */
+/* CRITICAL: Custom Dropdown Cross-Platform Fix */
+/* Forces dark theme on dropdown elements       */
+/* Prevents Windows/Chrome OS-level overrides   */
+/* ============================================= */
+
+.custom-dropdown,
+.custom-dropdown * {
+  color-scheme: dark !important;
+}
+
+.custom-dropdown-trigger {
+  background-color: var(--dropdown-bg) !important;
+  color: var(--dropdown-text) !important;
+  border: 1px solid var(--dropdown-border) !important;
+  border-radius: 12px !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+}
+
+.custom-dropdown-trigger:focus {
+  border-color: var(--dropdown-border-active) !important;
+  box-shadow: 0 0 0 1px var(--dropdown-border-active), 0 0 20px rgba(96, 165, 250, 0.15) !important;
+  outline: none !important;
+}
+
+.custom-dropdown-menu {
+  background-color: var(--dropdown-bg) !important;
+  color: var(--dropdown-text) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color-scheme: dark !important;
+}
+
+.custom-dropdown-menu>div {
+  background-color: transparent !important;
+  color: var(--dropdown-text) !important;
+}
+
+.custom-dropdown-menu>div:hover {
+  background-color: rgba(255, 255, 255, 0.05) !important;
 }
 
 html {
