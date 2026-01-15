@@ -82,7 +82,6 @@ const CustomDropdown = ({
             style={{
                 position: 'relative',
                 width: '100%',
-                colorScheme: 'dark',
                 zIndex: isOpen ? 100 : 1, // Dynamically lift container when open
             }}
         >
@@ -95,10 +94,10 @@ const CustomDropdown = ({
                 style={{
                     width: '100%',
                     padding: '1rem 3rem 1rem 1.5rem',
-                    backgroundColor: 'var(--dropdown-bg, #0f172a)',
-                    border: '1px solid var(--dropdown-border, rgba(255, 255, 255, 0.08))',
+                    backgroundColor: 'var(--bg-card)',
+                    border: isOpen ? '1px solid var(--primary)' : '1px solid var(--border-light)',
                     borderRadius: '12px',
-                    color: isPlaceholder ? 'var(--dropdown-text-disabled, #64748b)' : 'var(--dropdown-text, #f1f5f9)',
+                    color: isPlaceholder ? 'var(--text-muted)' : 'var(--text-main)',
                     fontSize: '1rem',
                     fontFamily: 'inherit',
                     textAlign: 'left',
@@ -106,18 +105,22 @@ const CustomDropdown = ({
                     transition: 'all 0.2s ease',
                     outline: 'none',
                     opacity: disabled ? 0.6 : 1,
-                    colorScheme: 'dark',
+                    boxShadow: isOpen ? 'var(--shadow-glow)' : 'var(--shadow-sm)',
                     WebkitAppearance: 'none',
                     MozAppearance: 'none',
                     appearance: 'none',
                 }}
-                onFocus={(e) => {
-                    e.target.style.borderColor = 'var(--dropdown-border-active, #60a5fa)';
-                    e.target.style.boxShadow = '0 0 0 1px var(--dropdown-border-active, #60a5fa), 0 0 20px rgba(96, 165, 250, 0.15)';
+                onMouseEnter={(e) => {
+                    if (!disabled && !isOpen) {
+                        e.target.style.borderColor = 'var(--primary-light)';
+                        e.target.style.backgroundColor = 'var(--bg-subtle)';
+                    }
                 }}
-                onBlur={(e) => {
-                    e.target.style.borderColor = 'var(--dropdown-border, rgba(255, 255, 255, 0.08))';
-                    e.target.style.boxShadow = 'none';
+                onMouseLeave={(e) => {
+                    if (!disabled && !isOpen) {
+                        e.target.style.borderColor = 'var(--border-light)';
+                        e.target.style.backgroundColor = 'var(--bg-card)';
+                    }
                 }}
             >
                 {selectedLabel}
@@ -131,11 +134,11 @@ const CustomDropdown = ({
                     top: '50%',
                     transform: `translateY(-50%) rotate(${isOpen ? '180deg' : '0deg'})`,
                     pointerEvents: 'none',
-                    color: 'var(--text-secondary, #94a3b8)',
-                    transition: 'transform 0.2s ease',
+                    color: isOpen ? 'var(--primary)' : 'var(--text-secondary)',
+                    transition: 'all 0.2s ease',
                 }}
             >
-                <ChevronDown size={16} />
+                <ChevronDown size={18} />
             </div>
 
             {/* Dropdown Menu */}
@@ -144,19 +147,19 @@ const CustomDropdown = ({
                     className="custom-dropdown-menu"
                     style={{
                         position: 'absolute',
-                        top: 'calc(100% + 4px)',
+                        top: 'calc(100% + 8px)',
                         left: 0,
                         right: 0,
-                        backgroundColor: '#0f172a', // Enjoined solid background
-                        border: '1px solid rgba(255, 255, 255, 0.15)',
-                        borderRadius: '12px',
-                        boxShadow: '0 10px 40px rgba(0,0,0,0.8)', // Stronger shadow
+                        backgroundColor: 'var(--bg-card)',
+                        border: '1px solid var(--border-light)',
+                        borderRadius: '16px',
+                        boxShadow: 'var(--shadow-lg)',
                         zIndex: 9999, // Ensure it's on top
-                        maxHeight: '250px',
+                        maxHeight: '300px',
                         overflowY: 'auto',
-                        animation: 'dropdownFadeIn 0.15s ease-out',
-                        colorScheme: 'dark',
+                        animation: 'dropdownFadeIn 0.2s ease-out',
                         backdropFilter: 'blur(20px)',
+                        padding: '8px'
                     }}
                 >
                     {options.map((option, index) => {
@@ -174,27 +177,38 @@ const CustomDropdown = ({
                                 }}
                                 style={{
                                     padding: '12px 16px',
-                                    color: isDisabled ? 'var(--dropdown-text-disabled, #64748b)' : 'var(--dropdown-text, #f1f5f9)',
-                                    backgroundColor: isSelected ? 'var(--dropdown-bg-hover, rgba(96, 165, 250, 0.15))' : 'transparent',
+                                    color: isDisabled ? 'var(--text-muted)' : (isSelected ? 'var(--primary-dark)' : 'var(--text-main)'),
+                                    backgroundColor: isSelected ? 'var(--primary-dim)' : 'transparent',
                                     cursor: isDisabled ? 'not-allowed' : 'pointer',
-                                    transition: 'background-color 0.15s ease',
-                                    borderBottom: index < options.length - 1 ? '1px solid rgba(255, 255, 255, 0.05)' : 'none',
-                                    fontSize: '1rem',
+                                    transition: 'all 0.15s ease',
+                                    border: '1px solid',
+                                    borderColor: isSelected ? 'var(--primary-light)' : 'transparent',
+                                    borderRadius: '10px',
+                                    marginBottom: '4px',
+                                    fontSize: '0.95rem',
+                                    fontWeight: isSelected ? '600' : '500',
                                     fontFamily: 'inherit',
-                                    colorScheme: 'dark',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between'
                                 }}
                                 onMouseEnter={(e) => {
                                     if (!isDisabled && !isSelected) {
-                                        e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
+                                        e.currentTarget.style.backgroundColor = 'var(--bg-subtle)';
+                                        e.currentTarget.style.borderColor = 'var(--border-light)';
                                     }
                                 }}
                                 onMouseLeave={(e) => {
                                     if (!isDisabled) {
-                                        e.target.style.backgroundColor = isSelected ? 'var(--dropdown-bg-hover, rgba(96, 165, 250, 0.15))' : 'transparent';
+                                        e.currentTarget.style.backgroundColor = isSelected ? 'var(--primary-dim)' : 'transparent';
+                                        e.currentTarget.style.borderColor = isSelected ? 'var(--primary-light)' : 'transparent';
                                     }
                                 }}
                             >
                                 {optionLabel}
+                                {isSelected && (
+                                    <span style={{ color: 'var(--primary)' }}>✓</span>
+                                )}
                             </div>
                         );
                     })}
