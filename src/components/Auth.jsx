@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { auth, db } from '../firebase';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, signOut, sendPasswordResetEmail } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, signOut, sendPasswordResetEmail, updateProfile } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import { Mail, Lock, User, ArrowRight } from 'lucide-react';
@@ -84,6 +84,9 @@ const Auth = () => {
                     timeoutPromise
                 ]);
                 const user = userCredential.user;
+
+                // Update Display Name
+                await updateProfile(user, { displayName: name });
 
                 // Send Verification Email
                 await sendEmailVerification(user);
