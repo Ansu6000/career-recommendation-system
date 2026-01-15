@@ -86,7 +86,12 @@ const Auth = () => {
                 const user = userCredential.user;
 
                 // Update Display Name
-                await updateProfile(user, { displayName: name });
+                try {
+                    await updateProfile(user, { displayName: name });
+                    await user.reload(); // Force refresh to ensure name persists
+                } catch (error) {
+                    console.error("Failed to set display name:", error);
+                }
 
                 // Send Verification Email
                 await sendEmailVerification(user);
