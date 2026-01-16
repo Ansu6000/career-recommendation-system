@@ -207,10 +207,10 @@ const Welcome = () => {
         }}>
 
           <h1 className="animate-enter" style={{
-            fontSize: 'clamp(2.5rem, 6vw, 4rem)',
+            fontSize: 'clamp(3rem, 8vw, 5rem)',
             fontWeight: '800',
             lineHeight: '1.1',
-            marginBottom: '24px',
+            marginBottom: '28px',
             letterSpacing: '-0.04em',
             color: 'var(--text-main)',
             width: '100%'
@@ -220,13 +220,13 @@ const Welcome = () => {
           </h1>
 
           <p className="animate-enter delay-100" style={{
-            fontSize: '1.15rem',
+            fontSize: 'clamp(1.15rem, 2.5vw, 1.4rem)',
             color: 'var(--text-secondary)',
-            lineHeight: '1.7',
-            marginBottom: '40px',
+            lineHeight: '1.75',
+            marginBottom: '48px',
             width: '100%',
-            maxWidth: '550px',
-            padding: '0 8px',
+            maxWidth: '620px',
+            padding: '0 12px',
             boxSizing: 'border-box'
           }}>
             Answer 20 quick questions and get a personalized career roadmap
