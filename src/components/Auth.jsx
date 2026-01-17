@@ -3,7 +3,7 @@ import { auth, db } from '../firebase';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, signOut, sendPasswordResetEmail, updateProfile } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
-import { Mail, Lock, User, ArrowRight } from 'lucide-react';
+import { Mail, Lock, User, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import CustomDropdown from './CustomDropdown';
 
 const Auth = () => {
@@ -17,6 +17,7 @@ const Auth = () => {
     const [grade, setGrade] = useState('11');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 
     const startDemoMode = () => {
@@ -293,17 +294,42 @@ const Auth = () => {
                                 <Mail className="input-icon" size={18} />
                             </div>
 
-                            <div className="input-group">
+                            <div className="input-group" style={{ position: 'relative' }}>
                                 <input
-                                    type="password"
+                                    type={showPassword ? "text" : "password"}
                                     placeholder="Password"
                                     className="input-field"
+                                    style={{ paddingRight: '80px' }}
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
                                     autoComplete={isLogin ? "current-password" : "new-password"}
                                 />
                                 <Lock className="input-icon" size={18} />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    style={{
+                                        position: 'absolute',
+                                        right: '12px',
+                                        top: '50%',
+                                        transform: 'translateY(-50%)',
+                                        background: 'none',
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                        color: 'var(--text-muted)',
+                                        padding: '4px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        transition: 'color 0.2s ease'
+                                    }}
+                                    onMouseOver={(e) => e.currentTarget.style.color = 'var(--primary)'}
+                                    onMouseOut={(e) => e.currentTarget.style.color = 'var(--text-muted)'}
+                                    aria-label={showPassword ? "Hide password" : "Show password"}
+                                >
+                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </button>
                             </div>
 
                             {isLogin && (
