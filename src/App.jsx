@@ -229,8 +229,8 @@ const Welcome = () => {
             padding: '0 12px',
             boxSizing: 'border-box'
           }}>
-            Answer 20 quick questions and get a personalized career roadmap
-            with specific courses, exams, and resources for Indian students.
+            Take a 5-minute assessment. Get matched careers across Tech, Medicine,
+            Defense, Aviation & more—with entrance exams, colleges, and salary insights.
           </p>
 
           <div className="animate-enter delay-200">
@@ -395,10 +395,10 @@ const Welcome = () => {
                   <Target size={28} color="var(--primary)" />
                 </div>
                 <h3 style={{ fontSize: '1.2rem', fontWeight: '700', marginBottom: '12px', color: 'var(--text-main)' }}>
-                  Career Matches
+                  Tailored Career Matches
                 </h3>
                 <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: '1.6', margin: 0 }}>
-                  3 career recommendations with salary ranges, work environment, and real examples.
+                  Get 3 career recommendations based on your unique profile, with salary expectations and growth potential.
                 </p>
               </div>
             </AnimatedSection>
@@ -410,10 +410,10 @@ const Welcome = () => {
                   <GraduationCap size={28} color="var(--primary)" />
                 </div>
                 <h3 style={{ fontSize: '1.2rem', fontWeight: '700', marginBottom: '12px', color: 'var(--text-main)' }}>
-                  Complete Roadmap
+                  Step-by-Step Roadmap
                 </h3>
                 <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: '1.6', margin: 0 }}>
-                  Which stream, entrance exams (JEE, NEET, CLAT), and degrees - step by step.
+                  Know exactly which stream, exams, and degrees to pursue from Class 11 onwards.
                 </p>
               </div>
             </AnimatedSection>
@@ -425,10 +425,10 @@ const Welcome = () => {
                   <Lightbulb size={28} color="var(--primary)" />
                 </div>
                 <h3 style={{ fontSize: '1.2rem', fontWeight: '700', marginBottom: '12px', color: 'var(--text-main)' }}>
-                  Real Resources
+                  Curated Resources
                 </h3>
                 <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: '1.6', margin: 0 }}>
-                  YouTube channels, courses, and books you can start with today.
+                  Access hand-picked courses, books, and channels to start your preparation today.
                 </p>
               </div>
             </AnimatedSection>
@@ -455,9 +455,9 @@ const Welcome = () => {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             {[
-              { num: 1, title: 'Take the Assessment', desc: '20 questions about your interests, personality, and goals. Takes 5 minutes.' },
-              { num: 2, title: 'AI Analyzes Your Profile', desc: 'Our AI understands your unique combination of traits and preferences.' },
-              { num: 3, title: 'Get Your Blueprint', desc: 'Receive detailed career matches, a step-by-step roadmap, and curated resources.' }
+              { num: 1, title: 'Complete the Assessment', desc: 'Answer 15 situational questions designed to understand your strengths and preferences.' },
+              { num: 2, title: 'Get AI-Powered Analysis', desc: 'Our system evaluates your responses across multiple career dimensions.' },
+              { num: 3, title: 'Receive Your Roadmap', desc: 'Get personalized career recommendations with actionable next steps.' }
             ].map((step, i) => (
               <AnimatedSection key={i} delay={i * 0.15}>
                 <div className="step-card">

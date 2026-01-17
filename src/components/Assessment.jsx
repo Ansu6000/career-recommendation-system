@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { questions } from '../data/questions';
-import { generateCareerPath, getSmartFallback } from '../services/gemini';
+import { questions, sections } from '../data/questions';
+import { generateCareerPath, calculateWeightedScores, getTopCategories } from '../services/gemini';
 import { auth } from '../firebase';
 import { saveAssessment, getAssessments } from '../services/supabase';
 import { ArrowRight, ArrowLeft, CheckCircle, User, Users, Lock, RefreshCw } from 'lucide-react';
@@ -191,14 +191,28 @@ const Assessment = () => {
             console.log("🤖 Starting AI Generation...");
             careerData = await Promise.race([
                 generateCareerPath(finalProfile, answers),
-                new Promise((_, reject) => setTimeout(() => reject(new Error("AI_TIMEOUT")), 12000))
+                new Promise((_, reject) => setTimeout(() => reject(new Error("AI_TIMEOUT")), 15000))
             ]);
         } catch (error) {
-            console.warn("AI Issue, using fallback:", error.message);
-            careerData = getSmartFallback(answers);
+            console.warn("AI Issue, attempting with scoring system:", error.message);
+            // The generateCareerPath function handles fallback internally
+            try {
+                careerData = await generateCareerPath(finalProfile, answers);
+            } catch (e) {
+                console.error("Fallback also failed:", e.message);
+            }
         }
 
-        if (!careerData) careerData = getSmartFallback(answers);
+        if (!careerData) {
+            // Last resort - generate basic fallback
+            console.warn("No career data received, using emergency fallback");
+            careerData = await generateCareerPath(finalProfile, answers).catch(() => ({
+                archetype: { title: "The Explorer", description: "Still discovering your path", traits: ["Curious", "Open-minded"] },
+                strengthSpectrum: { analytical: 50, creative: 50, practical: 50, social: 50, physical: 50, leadership: 50 },
+                topCareers: [{ pathName: "Career Exploration", match: "100%", reason: "Continue exploring", relevance: "Important", salary: "Variable", description: "Discover more about yourself" }],
+                roadmap: { class11_12_stream: "Any stream suits exploration", focus_areas: "General awareness", entrance_exams: [], college_degree: "Based on interests", skills_to_learn: [] }
+            }));
+        }
 
         // Attach Context
         const timestamp = new Date().toISOString();
@@ -494,11 +508,10 @@ const Assessment = () => {
                             Section {currentPage + 1} / {totalPages}
                         </span>
                         <span style={{ fontSize: '0.9rem', fontWeight: '700', color: 'var(--primary)' }}>
-                            {[
-                                "Academic Profile",
-                                "Cognitive Style",
-                                "Work Personality",
-                                "Core Values"
+                            {currentQuestions[0]?.sectionTitle || [
+                                "Aptitude & Interests",
+                                "Work Style & Personality",
+                                "Future Goals & Reality"
                             ][currentPage]}
                         </span>
                     </div>
@@ -523,7 +536,7 @@ const Assessment = () => {
                                 <CustomDropdown
                                     value={answers[q.id] || ""}
                                     onChange={(value) => handleSelect(q.id, value)}
-                                    options={q.options}
+                                    options={q.options.map(opt => typeof opt === 'object' ? opt.text : opt)}
                                     placeholder="Select your answer..."
                                 />
                             </div>

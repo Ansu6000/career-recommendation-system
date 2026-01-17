@@ -1,221 +1,521 @@
+// Career Assessment Questions - Professional & Weighted
+// 15 Questions across 3 Sections
+// Clear, relevant questions that test career aptitudes without directly asking career preferences
+
 export const questions = [
-    // SECTION 1: INTERESTS & PASSIONS (What do you actually like?)
+    // ═══════════════════════════════════════════════════════════════════════════
+    // SECTION 1: ACADEMIC STRENGTHS & INTERESTS (Questions 1-5)
+    // ═══════════════════════════════════════════════════════════════════════════
     {
         id: 1,
-        question: "Which of these subjects do you genuinely enjoy studying the most?",
+        section: "aptitude",
+        sectionTitle: "Academic Strengths",
+        question: "Which type of subject comes most naturally to you?",
         options: [
-            "Maths / Physics (I like logic and solving definite problems)",
-            "Biology (I am fascinated by how living things work)",
-            "History / Literature (I love stories, past events, and writing)",
-            "Computer Science (I like coding, tech, or gaming logic)",
-            "Economics / Business (I like understanding how money works)",
-            "Art / Design (I enjoy drawing, creating, or editing)"
+            {
+                text: "Mathematics and Physics - logical reasoning and problem-solving",
+                weights: { tech: 5, aviation: 4, commerce: 3, defense: 2 }
+            },
+            {
+                text: "Biology and Chemistry - understanding systems and processes",
+                weights: { medical: 5, sports: 3 }
+            },
+            {
+                text: "History, Civics, and Social Studies - analyzing society and governance",
+                weights: { humanities: 5, government: 5, defense: 3 }
+            },
+            {
+                text: "Economics and Accountancy - working with numbers and finance",
+                weights: { commerce: 5, government: 3 }
+            },
+            {
+                text: "Art, Music, or Literature - creative expression",
+                weights: { creative: 5, humanities: 3 }
+            },
+            {
+                text: "Physical Education and Sports - physical activities and competition",
+                weights: { sports: 5, defense: 5, aviation: 3 }
+            }
         ]
     },
     {
         id: 2,
-        question: "How do you prefer to spend your free time on weekends?",
+        section: "aptitude",
+        sectionTitle: "Academic Strengths",
+        question: "What type of problems do you enjoy solving?",
         options: [
-            "Tinkering with gadgets, code, or fixing things",
-            "Reading books, writing stories, or researching topics",
-            "Drawing, painting, or editing photos/videos",
-            "Playing strategy games, puzzles, or chess",
-            "Hanging out with friends and organizing plans",
-            "Volunteering help or teaching someone something"
+            {
+                text: "Technical problems - debugging code, fixing machines, building systems",
+                weights: { tech: 5, aviation: 3 }
+            },
+            {
+                text: "Analytical problems - data analysis, research, finding patterns",
+                weights: { tech: 4, commerce: 4, medical: 3 }
+            },
+            {
+                text: "Human problems - conflicts, counseling, understanding behavior",
+                weights: { medical: 4, humanities: 5, government: 3 }
+            },
+            {
+                text: "Strategic problems - planning, competition, resource management",
+                weights: { commerce: 5, defense: 4, government: 4, sports: 3 }
+            },
+            {
+                text: "Creative problems - design challenges, artistic expression",
+                weights: { creative: 5, humanities: 2 }
+            },
+            {
+                text: "Physical challenges - endurance, coordination, tactical execution",
+                weights: { sports: 5, defense: 5, aviation: 4 }
+            }
         ]
     },
     {
         id: 3,
-        question: "If you could pick a YouTube channel to binge-watch, what genre would it be?",
+        section: "aptitude",
+        sectionTitle: "Academic Strengths",
+        question: "In a group project, which role suits you best?",
         options: [
-            "Tech reviews, coding tutorials, or science experiments",
-            "Documentaries about history, space, or nature",
-            "Art tutorials, DIY crafts, or filmmaking tips",
-            "Stock market analysis, business case studies, or shark tank",
-            "Medical dramas, surgery breakdowns, or health tips",
-            "Debates, podcasts, or social commentary"
+            {
+                text: "Team Leader - organizing, delegating, and ensuring completion",
+                weights: { defense: 5, commerce: 4, government: 4, sports: 3 }
+            },
+            {
+                text: "Researcher - gathering information and analyzing data",
+                weights: { tech: 4, medical: 4, humanities: 3 }
+            },
+            {
+                text: "Builder/Developer - creating the actual deliverable",
+                weights: { tech: 5, creative: 4, aviation: 2 }
+            },
+            {
+                text: "Presenter - communicating ideas and representing the team",
+                weights: { humanities: 4, commerce: 4, government: 3 }
+            },
+            {
+                text: "Coordinator - managing people and resolving conflicts",
+                weights: { medical: 3, humanities: 4, government: 4 }
+            },
+            {
+                text: "Executor - taking action and getting things done quickly",
+                weights: { defense: 4, sports: 5, aviation: 4 }
+            }
         ]
     },
     {
         id: 4,
-        question: "Which kind of class project role do you usually take?",
+        section: "aptitude",
+        sectionTitle: "Academic Strengths",
+        question: "What kind of content do you naturally consume in your free time?",
         options: [
-            "The Leader - I assign tasks and make sure we finish",
-            "The Researcher - I find all the facts and information",
-            "The Builder/Creator - I make the model, slide, or code",
-            "The Presenter - I do the talking in front of the class",
-            "The Helper - I do whatever is needed to support the team"
+            {
+                text: "Technology news, coding tutorials, science documentaries",
+                weights: { tech: 5, aviation: 2 }
+            },
+            {
+                text: "Health, fitness, medical breakthroughs, psychology",
+                weights: { medical: 5, sports: 3 }
+            },
+            {
+                text: "Current affairs, politics, legal cases, social issues",
+                weights: { government: 5, humanities: 4, defense: 2 }
+            },
+            {
+                text: "Business news, stock markets, entrepreneurship stories",
+                weights: { commerce: 5 }
+            },
+            {
+                text: "Art, design, films, music, creative tutorials",
+                weights: { creative: 5, humanities: 2 }
+            },
+            {
+                text: "Sports, fitness, adventure, military/aviation content",
+                weights: { sports: 4, defense: 5, aviation: 5 }
+            }
         ]
     },
     {
         id: 5,
-        question: "What kind of problems do you enjoy solving?",
+        section: "aptitude",
+        sectionTitle: "Academic Strengths",
+        question: "How do you prefer to learn new concepts?",
         options: [
-            "Logical ones with a clear right or wrong answer",
-            "Creative ones where there are many possible solutions",
-            "Social ones involving people and feelings",
-            "Practical ones involving physical objects or tools",
-            "Strategic ones involving planning and money"
+            {
+                text: "Hands-on practice - learning by doing and experimenting",
+                weights: { tech: 4, sports: 4, defense: 3, creative: 3, aviation: 3 }
+            },
+            {
+                text: "Reading and research - studying in-depth from books/articles",
+                weights: { medical: 4, humanities: 4, government: 4 }
+            },
+            {
+                text: "Visual learning - videos, diagrams, and demonstrations",
+                weights: { creative: 4, tech: 3, medical: 2 }
+            },
+            {
+                text: "Discussion and debate - learning through conversation",
+                weights: { humanities: 5, government: 4, commerce: 3 }
+            },
+            {
+                text: "Structured training - following a defined curriculum or course",
+                weights: { defense: 5, aviation: 5, government: 3, commerce: 2 }
+            }
         ]
     },
 
-    // SECTION 2: WORK STYLE & PERSONALITY (How do you operate?)
+    // ═══════════════════════════════════════════════════════════════════════════
+    // SECTION 2: WORK STYLE & PERSONALITY (Questions 6-10)
+    // ═══════════════════════════════════════════════════════════════════════════
     {
         id: 6,
-        question: "Do you prefer working alone or in a group?",
+        section: "personality",
+        sectionTitle: "Work Style & Personality",
+        question: "How do you handle high-pressure situations with tight deadlines?",
         options: [
-            "Mostly alone - I can focus better",
-            "In a group - I like bouncing ideas off others",
-            "A mix - I like team brainstorming but solo execution",
-            "I don't mind as long as I get credit for my work"
+            {
+                text: "I thrive under pressure - it brings out my best performance",
+                weights: { defense: 5, aviation: 5, sports: 5, medical: 3 }
+            },
+            {
+                text: "I stay calm and work methodically through the problem",
+                weights: { tech: 4, medical: 4, government: 4 }
+            },
+            {
+                text: "I delegate and organize resources to meet the deadline",
+                weights: { commerce: 5, government: 3 }
+            },
+            {
+                text: "I prefer avoiding such situations - I like planned schedules",
+                weights: { humanities: 3, creative: 3 }
+            },
+            {
+                text: "I find creative shortcuts to deliver quickly",
+                weights: { creative: 4, tech: 3, commerce: 2 }
+            }
         ]
     },
     {
         id: 7,
-        question: "How do you handle strict rules and guidelines?",
+        section: "personality",
+        sectionTitle: "Work Style & Personality",
+        question: "How important is physical fitness in your daily routine?",
         options: [
-            "I like them, they tell me exactly what to do",
-            "I follow them but prefer some flexibility",
-            "I feel restricted and prefer doing things my own way",
-            "I usually try to find a workaround or hack"
+            {
+                text: "Essential - I train daily and maintain peak fitness",
+                weights: { defense: 5, sports: 5, aviation: 4 }
+            },
+            {
+                text: "Important - I exercise regularly for health",
+                weights: { medical: 3, commerce: 2, government: 2 }
+            },
+            {
+                text: "Moderate - I stay active but don't follow strict routines",
+                weights: { tech: 3, humanities: 3, creative: 3 }
+            },
+            {
+                text: "Low priority - I focus more on mental/creative work",
+                weights: { tech: 4, creative: 4, humanities: 3 }
+            }
         ]
     },
     {
         id: 8,
-        question: "When you have to make a decision, what do you rely on?",
+        section: "personality",
+        sectionTitle: "Work Style & Personality",
+        question: "How do you feel about following strict rules and hierarchies?",
         options: [
-            "Facts, data, and logic only",
-            "My gut feeling and intuition",
-            "Advice from parents or teachers",
-            "What will make the most people happy"
+            {
+                text: "I respect hierarchy - discipline and order are important",
+                weights: { defense: 5, aviation: 5, government: 5 }
+            },
+            {
+                text: "I follow rules but appreciate some flexibility",
+                weights: { commerce: 4, medical: 4, tech: 3 }
+            },
+            {
+                text: "I prefer autonomy and freedom in my work",
+                weights: { creative: 5, tech: 4, humanities: 3 }
+            },
+            {
+                text: "I like clear guidelines but dislike micromanagement",
+                weights: { commerce: 3, tech: 3, sports: 3 }
+            }
         ]
     },
     {
         id: 9,
-        question: "How do you feel about public speaking?",
+        section: "personality",
+        sectionTitle: "Work Style & Personality",
+        question: "How comfortable are you with public speaking and presentations?",
         options: [
-            "I love it, give me the mic!",
-            "It's okay if I am well prepared",
-            "I get nervous but can do it if forced",
-            "I absolutely hate it and avoid it at all costs"
+            {
+                text: "Very comfortable - I enjoy being the center of attention",
+                weights: { humanities: 4, commerce: 4, sports: 3, government: 3 }
+            },
+            {
+                text: "Comfortable with preparation - I can present well when ready",
+                weights: { tech: 3, medical: 3, defense: 3, government: 4 }
+            },
+            {
+                text: "Prefer one-on-one or small groups over large audiences",
+                weights: { medical: 4, tech: 3, creative: 3 }
+            },
+            {
+                text: "I prefer written communication over speaking",
+                weights: { tech: 4, creative: 3, humanities: 2 }
+            },
+            {
+                text: "I lead by example and actions, not words",
+                weights: { defense: 5, sports: 4, aviation: 4 }
+            }
         ]
     },
     {
         id: 10,
-        question: "Would you rather have a job that is...",
+        section: "personality",
+        sectionTitle: "Work Style & Personality",
+        question: "How do you feel about relocating frequently for work?",
         options: [
-            "Stable and secure (Government / Corporate)",
-            "High risk but high reward (Business / Startup)",
-            "Creative and expressive (Art / Design)",
-            "Service-oriented and impactful (Medicine / NGO)"
+            {
+                text: "Ready for it - I can serve anywhere in the country",
+                weights: { defense: 5, government: 5, aviation: 4 }
+            },
+            {
+                text: "Open to it - if the opportunity is good",
+                weights: { commerce: 4, tech: 3, medical: 2 }
+            },
+            {
+                text: "Prefer stability - I want to settle in one city",
+                weights: { humanities: 3, creative: 3 }
+            },
+            {
+                text: "I prefer remote work with location flexibility",
+                weights: { tech: 5, creative: 4 }
+            }
         ]
     },
 
-    // SECTION 3: FUTURE GOALS (Where do you see yourself?)
+    // ═══════════════════════════════════════════════════════════════════════════
+    // SECTION 3: GOALS & VALUES (Questions 11-15)
+    // ═══════════════════════════════════════════════════════════════════════════
     {
         id: 11,
-        question: "What is your primary motivation for a future career?",
+        section: "goals",
+        sectionTitle: "Goals & Values",
+        question: "What matters most to you in a career?",
         options: [
-            "Earning a lot of money and being wealthy",
-            "Solving difficult problems and inventing things",
-            "Helping people and making a social impact",
-            "Being famous or recognized for my talent",
-            "Have a chilled work-life balance"
+            {
+                text: "High income and financial growth",
+                weights: { commerce: 5, tech: 4, aviation: 3 }
+            },
+            {
+                text: "Job security and stability",
+                weights: { government: 5, medical: 3, defense: 3 }
+            },
+            {
+                text: "Serving the nation and public welfare",
+                weights: { defense: 5, government: 5, medical: 3 }
+            },
+            {
+                text: "Creative freedom and self-expression",
+                weights: { creative: 5, humanities: 3 }
+            },
+            {
+                text: "Prestige and social recognition",
+                weights: { medical: 4, government: 4, defense: 4, commerce: 3 }
+            },
+            {
+                text: "Adventure and unique experiences",
+                weights: { aviation: 5, defense: 4, sports: 4 }
+            },
+            {
+                text: "Making a difference in people's lives",
+                weights: { medical: 5, humanities: 4, government: 3 }
+            }
         ]
     },
     {
         id: 12,
-        question: "Imagine you are successful in 10 years. What are you doing?",
+        section: "goals",
+        sectionTitle: "Goals & Values",
+        question: "How much time are you willing to invest in preparation/training?",
         options: [
-            "Running my own company or brand",
-            "Working as a top expert in a specialized field",
-            " traveling the world and working remotely",
-            "Saving lives in a hospital or clinic",
-            "Leading a large team in a big office"
+            {
+                text: "5+ years of rigorous training and exams",
+                weights: { medical: 5, defense: 5, government: 5, aviation: 4 }
+            },
+            {
+                text: "3-4 years of focused preparation",
+                weights: { tech: 4, commerce: 4, humanities: 4 }
+            },
+            {
+                text: "1-2 years of intensive study",
+                weights: { commerce: 4, tech: 3 }
+            },
+            {
+                text: "I prefer skill-based paths over exam-based ones",
+                weights: { creative: 5, sports: 4, tech: 2 }
+            }
         ]
     },
     {
         id: 13,
-        question: "How much math do you want in your future career?",
+        section: "goals",
+        sectionTitle: "Goals & Values",
+        question: "What type of work environment do you prefer?",
         options: [
-            "A lot - I love numbers and calculations",
-            "Some - Basic calculations are fine",
-            "None - I hate math please keep it away",
-            "Only if it's applied to money (Finance)"
+            {
+                text: "Office with modern technology and flexible hours",
+                weights: { tech: 5, commerce: 4, creative: 3 }
+            },
+            {
+                text: "Hospital, clinic, or healthcare facility",
+                weights: { medical: 5 }
+            },
+            {
+                text: "Government offices and administrative settings",
+                weights: { government: 5, humanities: 4 }
+            },
+            {
+                text: "Outdoors, field work, or physically active environments",
+                weights: { defense: 5, sports: 5, aviation: 4 }
+            },
+            {
+                text: "Creative studio or independent workspace",
+                weights: { creative: 5, humanities: 2 }
+            },
+            {
+                text: "Courtrooms, media houses, or public-facing roles",
+                weights: { humanities: 5, government: 3 }
+            }
         ]
     },
     {
         id: 14,
-        question: "Do you like writing essays or reports?",
+        section: "goals",
+        sectionTitle: "Goals & Values",
+        question: "How do you handle responsibility for critical decisions?",
         options: [
-            "Yes, I enjoy expressing my thoughts in words",
-            "It's okay, but not my favorite thing",
-            "No, I prefer bullet points or diagrams",
-            "Only if it's creative writing (stories/poems)"
+            {
+                text: "I take full ownership - I'm confident in my judgment",
+                weights: { defense: 5, aviation: 5, medical: 4, commerce: 4 }
+            },
+            {
+                text: "I prefer shared responsibility with a team",
+                weights: { tech: 4, commerce: 3, creative: 3 }
+            },
+            {
+                text: "I follow established protocols and guidelines",
+                weights: { government: 4, medical: 4, aviation: 3 }
+            },
+            {
+                text: "I consult experts before making major decisions",
+                weights: { humanities: 4, medical: 3, government: 3 }
+            },
+            {
+                text: "I trust my instincts and act decisively",
+                weights: { sports: 5, defense: 4, commerce: 3 }
+            }
         ]
     },
     {
         id: 15,
-        question: "How curious are you about how machines/software work?",
+        section: "goals",
+        sectionTitle: "Goals & Values",
+        question: "Which trait best describes you?",
         options: [
-            "Extremely - I take things apart to see inside",
-            "Moderately - I like using technology",
-            "Not really - I just want them to work",
-            "I am more interested in nature/biology than machines"
+            {
+                text: "Analytical - I think logically and solve problems systematically",
+                weights: { tech: 5, commerce: 4, aviation: 3 }
+            },
+            {
+                text: "Compassionate - I care deeply about others' wellbeing",
+                weights: { medical: 5, humanities: 4, government: 3 }
+            },
+            {
+                text: "Ambitious - I set high goals and work hard to achieve them",
+                weights: { commerce: 5, government: 4, tech: 3 }
+            },
+            {
+                text: "Disciplined - I follow routines and respect structure",
+                weights: { defense: 5, aviation: 5, government: 4 }
+            },
+            {
+                text: "Creative - I think differently and express ideas uniquely",
+                weights: { creative: 5, humanities: 3 }
+            },
+            {
+                text: "Competitive - I love challenges and winning",
+                weights: { sports: 5, commerce: 4, defense: 3 }
+            },
+            {
+                text: "Adventurous - I seek new experiences and thrill",
+                weights: { aviation: 5, defense: 4, sports: 4 }
+            }
         ]
-    },
+    }
+];
 
-    // SECTION 4: REALITY CHECK
+// ═══════════════════════════════════════════════════════════════════════════
+// CAREER CATEGORY DEFINITIONS
+// ═══════════════════════════════════════════════════════════════════════════
+export const careerCategories = {
+    tech: {
+        name: "Technology & Engineering",
+        careers: ["Software Engineer", "Data Scientist", "AI/ML Engineer", "Cybersecurity Analyst", "Product Manager", "Cloud Architect", "Robotics Engineer", "Blockchain Developer"]
+    },
+    medical: {
+        name: "Healthcare & Medicine",
+        careers: ["Doctor (MBBS)", "Surgeon", "Psychiatrist", "Biotech Researcher", "Pharmacist", "Veterinarian", "Physiotherapist", "Forensic Scientist"]
+    },
+    commerce: {
+        name: "Business & Finance",
+        careers: ["Chartered Accountant", "Investment Banker", "Management Consultant", "Entrepreneur", "Financial Analyst", "Economist", "Actuary", "Real Estate Analyst"]
+    },
+    humanities: {
+        name: "Law & Social Sciences",
+        careers: ["Lawyer/Advocate", "Journalist", "Teacher/Professor", "Social Worker", "Psychologist", "Diplomat", "Historian", "NGO Director"]
+    },
+    creative: {
+        name: "Arts & Design",
+        careers: ["UI/UX Designer", "Film Director", "Architect", "Fashion Designer", "Graphic Designer", "Animator", "Music Producer", "Game Designer"]
+    },
+    defense: {
+        name: "Defense & Armed Forces",
+        careers: ["Indian Army Officer", "Indian Navy Officer", "Indian Air Force Officer", "NDA/CDS Graduate", "Paramilitary Officer (CRPF/BSF)", "Intelligence Officer (RAW/IB)", "Coast Guard Officer", "Military Engineer"]
+    },
+    aviation: {
+        name: "Aviation & Aerospace",
+        careers: ["Commercial Pilot", "Fighter Pilot", "Aerospace Engineer", "Air Traffic Controller", "Aircraft Maintenance Engineer", "Drone Operator/Engineer", "Space Scientist (ISRO)", "Helicopter Pilot"]
+    },
+    sports: {
+        name: "Sports & Athletics",
+        careers: ["Professional Athlete", "Sports Coach", "Sports Physiotherapist", "Sports Manager", "Fitness Trainer", "Sports Journalist", "Esports Professional", "Sports Psychologist"]
+    },
+    government: {
+        name: "Civil Services & Government",
+        careers: ["IAS Officer", "IPS Officer", "IFS Officer (Diplomat)", "State PSC Officer", "Bank PO (SBI/RBI)", "Railway Officer", "SSC Officer", "UPSC - Other Services"]
+    }
+};
+
+// Section definitions for UI
+export const sections = [
     {
-        id: 16,
-        question: "Are you willing to study for long hours for competitive exams (JEE/NEET/CA)?",
-        options: [
-            "Yes, I can grind for 2-3 years for a top college",
-            "No, I want a more balanced college life",
-            "Maybe, if I really love the subject",
-            "I prefer courses based on portfolio/talent (Design/Arts)"
-        ]
+        id: "aptitude",
+        title: "Academic Strengths",
+        description: "Understanding your core competencies",
+        questionCount: 5
     },
     {
-        id: 17,
-        question: "Do you prefer a desk job or moving around?",
-        options: [
-            "Desk job - AC office with computer",
-            "Field job - Traveling, site visits, or outdoors",
-            "Hybrid - A mix of both",
-            "Anything as long as it pays well"
-        ]
+        id: "personality",
+        title: "Work Style & Personality",
+        description: "How you approach work and challenges",
+        questionCount: 5
     },
     {
-        id: 18,
-        question: "How important is prestige/status to you?",
-        options: [
-            "Very important - I want a respected title (Dr./IAS)",
-            "Somewhat important",
-            "Not important - I just want to be happy",
-            "I care more about money than status"
-        ]
-    },
-    {
-        id: 19,
-        question: "Are you interested in going abroad for studies/work?",
-        options: [
-            "Yes, definitely my goal",
-            "Maybe later for Master's",
-            "No, I want to stay and work in India",
-            "I haven't thought about it yet"
-        ]
-    },
-    {
-        id: 20,
-        question: "Finally, pick one word that describes you best:",
-        options: [
-            "Logical",
-            "Creative",
-            "Empathetic",
-            "Ambitious",
-            "Organized",
-            "Adventurous"
-        ]
+        id: "goals",
+        title: "Goals & Values",
+        description: "What drives your career decisions",
+        questionCount: 5
     }
 ];
