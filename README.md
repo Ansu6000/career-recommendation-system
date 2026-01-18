@@ -23,7 +23,7 @@ Pathwise addresses the challenge faced by Indian students when selecting career 
 | Assessment System | 15 professionally designed questions covering aptitude, personality, and values |
 | AI-Powered Analysis | Uses Groq AI (LLaMA 3) to analyze responses and generate personalized recommendations |
 | Career Roadmap | Specific guidance for Class 11/12 stream, entrance exams (JEE, NEET, CLAT, NDA, UPSC), and degrees |
-| 9 Career Domains | Tech, Medical, Commerce, Humanities, Creative, Defense, Aviation, Sports, Government |
+| Career Domains | Tech, Medical, Commerce, Humanities, Creative, Defense, Aviation, Sports, Government |
 | Indian Context | Built specifically for the Indian education system and career landscape |
 | Responsive Design | Modern UI with dark theme, glassmorphism, and smooth animations |
 
@@ -169,7 +169,7 @@ The assessment consists of 15 questions across 3 sections:
 | Work Style and Personality | Pressure handling, discipline, communication, flexibility | 5 |
 | Goals and Values | Career motivation, preparation commitment, environment preference | 5 |
 
-Each answer option has weighted scores mapped to 9 career categories, enabling accurate career matching based on response patterns.
+Each answer option has weighted scores mapped to various career categories, enabling accurate career matching based on response patterns.
 
 ---
 
