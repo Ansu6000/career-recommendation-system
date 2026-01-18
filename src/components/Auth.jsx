@@ -5,6 +5,7 @@ import { doc, setDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import { Mail, Lock, User, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import CustomDropdown from './CustomDropdown';
+import { trackEvent, startSession, ANALYTICS_EVENTS } from '../services/analytics';
 
 const Auth = () => {
     const [isLogin, setIsLogin] = useState(true);
@@ -78,6 +79,13 @@ const Auth = () => {
                     return;
                 }
 
+                // Track successful login
+                await startSession(userCredential.user.uid);
+                trackEvent(ANALYTICS_EVENTS.USER_LOGIN, userCredential.user.uid, {
+                    method: 'email',
+                    email: userCredential.user.email,
+                });
+
                 navigate('/');
             } else {
                 const userCredential = await Promise.race([
@@ -109,6 +117,14 @@ const Auth = () => {
 
                 // Sign out immediately so they can't access the app
                 await signOut(auth);
+
+                // Track new signup
+                trackEvent(ANALYTICS_EVENTS.USER_SIGNUP, user.uid, {
+                    method: 'email',
+                    email: user.email,
+                    grade,
+                    board,
+                });
 
                 // Clear form data so it doesn't "autofill" the login screen
                 setEmail('');

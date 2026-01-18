@@ -2,7 +2,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { RefreshCw, Book, Award, Map, LogOut, Home, Star, Briefcase, ExternalLink, Target, ChevronDown, ChevronUp, Zap, TrendingUp, PlusCircle, Loader } from 'lucide-react';
 import { auth } from '../firebase';
 import { getAssessments } from '../services/supabase';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { trackEvent, trackResultsView, trackCareerExpanded, trackResourceClick, ANALYTICS_EVENTS } from '../services/analytics';
 
 const Results = () => {
     const location = useLocation();
@@ -10,6 +11,7 @@ const Results = () => {
     const [result, setResult] = useState(null);
     const [expandedCareer, setExpandedCareer] = useState(0);
     const [loading, setLoading] = useState(true);
+    const hasTrackedView = useRef(false);
 
     // FIXED: Result Persistence Logic (Firestore Only - No LocalStorage)
     useEffect(() => {
@@ -17,6 +19,14 @@ const Results = () => {
             // New result came in -> Set it immediately
             setResult(location.state.result);
             setLoading(false);
+
+            // Track results view
+            if (!hasTrackedView.current) {
+                const user = auth.currentUser;
+                const careers = location.state.result?.topCareers?.map(c => c.pathName || c.title) || [];
+                trackResultsView(user?.uid || 'guest', careers);
+                hasTrackedView.current = true;
+            }
         } else {
             // Page refresh or direct access -> Fetch latest from DB
             const fetchLatestResult = async (user) => {
@@ -211,7 +221,16 @@ const Results = () => {
                             }}
                         >
                             <div
-                                onClick={() => setExpandedCareer(expandedCareer === idx ? -1 : idx)}
+                                onClick={() => {
+                                    const isExpanding = expandedCareer !== idx;
+                                    setExpandedCareer(isExpanding ? idx : -1);
+
+                                    // Track career expansion
+                                    if (isExpanding) {
+                                        const user = auth.currentUser;
+                                        trackCareerExpanded(user?.uid || 'guest', career.pathName || career.title);
+                                    }
+                                }}
                                 style={{ padding: '24px', cursor: 'pointer', background: idx === expandedCareer ? 'var(--bg-subtle)' : 'transparent' }}
                             >
                                 <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '16px' }}>
@@ -370,6 +389,10 @@ const Results = () => {
                                     href={res.link && res.link.startsWith('http') ? res.link : `https://www.google.com/search?q=${encodeURIComponent(res.name + " " + res.type)}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
+                                    onClick={() => {
+                                        const user = auth.currentUser;
+                                        trackResourceClick(user?.uid || 'guest', res.type, res.link || res.name);
+                                    }}
                                     style={{
                                         textDecoration: 'none',
                                         background: 'var(--bg-subtle)',

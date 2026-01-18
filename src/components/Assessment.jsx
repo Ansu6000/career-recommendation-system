@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { questions, sections } from '../data/questions';
 import { generateCareerPath, calculateWeightedScores, getTopCategories } from '../services/gemini';
@@ -6,6 +6,14 @@ import { auth } from '../firebase';
 import { saveAssessment, getAssessments } from '../services/supabase';
 import { ArrowRight, ArrowLeft, CheckCircle, User, Users, Lock, RefreshCw } from 'lucide-react';
 import CustomDropdown from './CustomDropdown';
+import {
+    trackEvent,
+    trackAssessmentStart,
+    trackAssessmentComplete,
+    trackQuestionAnswer,
+    trackAssessmentAbandoned,
+    ANALYTICS_EVENTS
+} from '../services/analytics';
 
 const Assessment = () => {
     const navigate = useNavigate();
@@ -28,6 +36,10 @@ const Assessment = () => {
     // CONFIG FORM
     const [configType, setConfigType] = useState(null); // 'self' or 'other'
     const [tempProfile, setTempProfile] = useState({ name: '', grade: '', board: '' });
+
+    // Analytics timing
+    const questionStartTime = useRef(Date.now());
+    const currentQuestionId = useRef(null);
 
     const questionsPerPage = 5;
 
@@ -134,7 +146,18 @@ const Assessment = () => {
 
 
     // 2. HANDLERS
-    const startAssessment = (type) => {
+    const startAssessment = async (type) => {
+        const user = auth.currentUser;
+
+        // Track assessment start
+        await trackAssessmentStart(user?.uid || 'guest', type);
+        trackEvent(ANALYTICS_EVENTS.ASSESSMENT_STARTED, user?.uid || 'guest', {
+            assessmentType: type,
+            isRetake: false,
+        });
+
+        questionStartTime.current = Date.now();
+
         if (type === 'self') {
             setTempProfile(userProfile);
             setMode('questions');
@@ -143,15 +166,32 @@ const Assessment = () => {
         }
     };
 
-    const submitOtherProfile = () => {
+    const submitOtherProfile = async () => {
         if (!tempProfile.name || !tempProfile.grade || !tempProfile.board) {
             alert("Please fill in all details.");
             return;
         }
+
+        const user = auth.currentUser;
+        await trackAssessmentStart(user?.uid || 'guest', 'other');
+        questionStartTime.current = Date.now();
+
         setMode('questions');
     };
 
-    const handleSelect = (questionId, option) => {
+    const handleSelect = async (questionId, option) => {
+        const user = auth.currentUser;
+
+        // Track time spent on previous question
+        if (currentQuestionId.current !== null && currentQuestionId.current !== questionId) {
+            const timeSpent = Date.now() - questionStartTime.current;
+            await trackQuestionAnswer(user?.uid || 'guest', currentQuestionId.current, answers[currentQuestionId.current], timeSpent);
+        }
+
+        // Update timing for new question
+        currentQuestionId.current = questionId;
+        questionStartTime.current = Date.now();
+
         setAnswers(prev => ({ ...prev, [questionId]: option }));
     };
 
@@ -289,7 +329,14 @@ const Assessment = () => {
             })();
         }
 
-        // 4. NAVIGATE IMMEDIATELY - data is already saved locally
+        // 5. TRACK ANALYTICS
+        const topCategory = careerData?.topCareers?.[0]?.pathName || 'unknown';
+        await trackAssessmentComplete(user?.uid || 'guest', {
+            careers: careerData?.topCareers,
+            topCategory,
+        });
+
+        // 6. NAVIGATE IMMEDIATELY - data is already saved locally
         console.log("🚀 Navigating to results...");
         navigate('/results', { state: { result: careerData } });
     };

@@ -5,9 +5,14 @@ import { getAssessments } from './services/supabase';
 import Auth from './components/Auth';
 import Assessment from './components/Assessment';
 import Results from './components/Results';
+import AnalyticsDashboard from './components/AnalyticsDashboard';
 
-import { Zap, Target, GraduationCap, Lightbulb, LogOut, ArrowRight, ArrowDown, History, Eye, Loader } from 'lucide-react';
+import { Zap, Target, GraduationCap, Lightbulb, LogOut, ArrowRight, ArrowDown, History, Eye, Loader, BarChart3 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { trackEvent, startSession, endSession, restoreSession, ANALYTICS_EVENTS } from './services/analytics';
+
+// Admin email for analytics access - set in .env file as VITE_ADMIN_EMAIL
+const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL || '';
 
 // Custom hook for scroll animations
 const useScrollAnimation = () => {
@@ -67,10 +72,24 @@ const Welcome = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Restore session on page load
+    restoreSession();
+
     const unsubscribeAuth = auth.onAuthStateChanged(async (u) => {
       setInitializing(false);
 
       if (u) {
+        // Start or restore analytics session
+        const existingSession = restoreSession();
+        if (!existingSession) {
+          await startSession(u.uid);
+        }
+
+        // Track page view
+        trackEvent(ANALYTICS_EVENTS.PAGE_VIEW, u.uid, {
+          page: 'home',
+          url: window.location.pathname,
+        });
         setUser(u);
         setHistoryLoading(true);
 
@@ -129,7 +148,17 @@ const Welcome = () => {
     return () => unsubscribeAuth();
   }, []);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    const currentUser = auth.currentUser;
+
+    // Track logout event
+    if (currentUser) {
+      await trackEvent(ANALYTICS_EVENTS.USER_LOGOUT, currentUser.uid, {
+        sessionDuration: Date.now(),
+      });
+      await endSession(currentUser.uid);
+    }
+
     if (auth) auth.signOut();
     // DON'T clear localStorage - keep assessment data intact!
     // localStorage.clear(); // REMOVED - this was wiping all user data
@@ -178,6 +207,29 @@ const Welcome = () => {
           <div className="nav-actions">
             {user ? (
               <>
+                {/* Analytics button - ADMIN ONLY */}
+                {user.email === ADMIN_EMAIL && (
+                  <button
+                    onClick={() => navigate('/analytics')}
+                    className="nav-analytics"
+                    style={{
+                      background: 'rgba(139, 92, 246, 0.1)',
+                      border: '1px solid rgba(139, 92, 246, 0.3)',
+                      borderRadius: '8px',
+                      padding: '8px 12px',
+                      color: 'var(--primary)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      cursor: 'pointer',
+                      fontSize: '0.85rem',
+                      fontWeight: '600',
+                      marginRight: '12px'
+                    }}
+                  >
+                    <BarChart3 size={16} /> Analytics
+                  </button>
+                )}
                 <span className="nav-user">Hi, <strong>{user.displayName || user.email?.split('@')[0] || 'Student'}</strong></span>
                 <button onClick={handleLogout} className="nav-logout">
                   <LogOut size={16} /> Logout
@@ -529,6 +581,7 @@ function App() {
           <Route path="/login" element={<Auth />} />
           <Route path="/assessment" element={<Assessment />} />
           <Route path="/results" element={<Results />} />
+          <Route path="/analytics" element={<AnalyticsDashboard />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>

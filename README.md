@@ -139,23 +139,58 @@ CREATE INDEX idx_assessments_user_id ON assessments(user_id);
 pathwise/
 ├── src/
 │   ├── components/
-│   │   ├── Assessment.jsx    # Quiz/Assessment flow
-│   │   ├── Auth.jsx          # Login/Signup page
-│   │   ├── Results.jsx       # Career blueprint display
-│   │   └── CustomDropdown.jsx # Custom dropdown component
+│   │   ├── Assessment.jsx        # Quiz/Assessment flow
+│   │   ├── Auth.jsx              # Login/Signup page
+│   │   ├── Results.jsx           # Career blueprint display
+│   │   ├── AnalyticsDashboard.jsx # Analytics visualization
+│   │   └── CustomDropdown.jsx    # Custom dropdown component
 │   ├── data/
-│   │   └── questions.js      # Assessment questions with weighted scoring
+│   │   └── questions.js          # Assessment questions with weighted scoring
 │   ├── services/
-│   │   ├── gemini.js         # AI integration (Groq API)
-│   │   └── supabase.js       # Supabase database service
-│   ├── App.jsx               # Main app + Homepage
-│   ├── firebase.js           # Firebase configuration
-│   └── index.css             # Global styles
-├── .env                      # Environment variables
+│   │   ├── analytics.js          # Analytics tracking service
+│   │   ├── gemini.js             # AI integration (Groq API)
+│   │   └── supabase.js           # Supabase database service
+│   ├── App.jsx                   # Main app + Homepage
+│   ├── firebase.js               # Firebase configuration
+│   └── index.css                 # Global styles
+├── supabase_analytics_schema.sql # SQL schema for analytics tables
+├── PRD.md                        # Product Requirements Document
+├── .env                          # Environment variables
 ├── index.html
 ├── package.json
 └── vite.config.js
 ```
+
+---
+
+## Analytics System
+
+Pathwise includes a comprehensive analytics system to track user engagement and product metrics.
+
+### Setup Analytics
+
+1. Go to your Supabase Dashboard → SQL Editor
+2. Run the contents of `supabase_analytics_schema.sql`
+3. Analytics will automatically track events
+
+### Tracked Metrics
+
+| Category | Metrics |
+|----------|---------|
+| **Engagement** | DAU, MAU, DAU/MAU stickiness ratio, session duration |
+| **Retention** | D1, D7, D30 retention rates, cohort analysis |
+| **Assessment** | Completion rate, average time, drop-off points, time per question |
+| **Careers** | Most generated careers, category distribution |
+| **Events** | Signup, login, logout, page views, resource clicks |
+
+### Analytics Dashboard
+
+Access the analytics dashboard at `/analytics` (requires login). Features:
+- Real-time DAU/MAU metrics
+- Assessment completion funnel
+- Top recommended careers
+- Career category distribution
+- Average completion time
 
 ---
 
