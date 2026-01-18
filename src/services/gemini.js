@@ -86,7 +86,7 @@ export const generateCareerPath = async (userProfile, answers) => {
     .map(([cat, score]) => `${cat}: ${score}`)
     .join(', ');
 
-  const systemPrompt = `You are PATHWISE - an expert Indian Career Counselor for Class 10-12 students.
+  const systemPrompt = `You are PATHWISE - an expert Career Counselor for Class 10-12 students.
 You have deep knowledge of all career paths including Defense Forces, Aviation, Government Services, and unconventional careers.
 
 ═══════════════════════════════════════════════════════════════════════════

@@ -513,7 +513,7 @@ const Welcome = () => {
         borderTop: '1px solid var(--border-light)',
         background: 'var(--bg-card)'
       }}>
-        <p style={{ margin: 0 }}>Pathwise - AI Career Guidance for Indian Students</p>
+        <p style={{ margin: 0 }}>Pathwise - AI Career Guidance for Students</p>
       </footer>
     </div>
   );

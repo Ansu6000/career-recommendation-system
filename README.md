@@ -1,14 +1,14 @@
 # Pathwise
 
-## AI-Powered Career Guidance for Indian Students
+## AI-Powered Career Guidance for Students
 
-A comprehensive career counseling platform designed specifically for Indian students in Class 10-12. The platform uses AI to analyze interests, personality, and goals to create personalized career blueprints.
+A comprehensive career counseling platform designed specifically for students in Class 10-12. The platform uses AI to analyze interests, personality, and goals to create personalized career blueprints.
 
 ---
 
 ## Overview
 
-Pathwise addresses the challenge faced by Indian students when selecting career paths, choosing streams after Class 10, preparing for entrance exams, and selecting appropriate degrees. The platform provides:
+Pathwise addresses the challenge faced by students when selecting career paths, choosing streams after Class 10, preparing for entrance exams, and selecting appropriate degrees. The platform provides:
 
 - 3 personalized career recommendations with salary expectations and growth potential
 - Step-by-step roadmap including stream selection, entrance exams, and degree paths
@@ -24,7 +24,7 @@ Pathwise addresses the challenge faced by Indian students when selecting career 
 | AI-Powered Analysis | Uses Groq AI (LLaMA 3) to analyze responses and generate personalized recommendations |
 | Career Roadmap | Specific guidance for Class 11/12 stream, entrance exams (JEE, NEET, CLAT, NDA, UPSC), and degrees |
 | Career Domains | Tech, Medical, Commerce, Humanities, Creative, Defense, Aviation, Sports, Government |
-| Indian Context | Built specifically for the Indian education system and career landscape |
+| Local Context | Built specifically for the local education system and career landscape |
 | Responsive Design | Modern UI with dark theme, glassmorphism, and smooth animations |
 
 ---
