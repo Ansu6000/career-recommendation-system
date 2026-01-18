@@ -33,7 +33,7 @@ A 15-question assessment that:
 
 ## Target Users
 
-**Primary:** Students in Class 10-12 who are confused about career choices
+**Primary:** Students in Class 11 and 12 who are confused about career choices
 
 **Secondary:** Parents who want to help their children make informed decisions
 
