@@ -1,7 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { RefreshCw, Book, Award, Map, LogOut, Home, Star, Briefcase, ExternalLink, Target, ChevronDown, ChevronUp, Zap, TrendingUp, PlusCircle, Loader } from 'lucide-react';
-import { auth } from '../firebase';
-import { getAssessments } from '../services/supabase';
+import { getAssessments, onAuthStateChange } from '../services/supabase';
 import { useState, useEffect, useRef } from 'react';
 import { trackEvent, trackResultsView, trackCareerExpanded, trackResourceClick, ANALYTICS_EVENTS } from '../services/analytics';
 
@@ -11,27 +10,25 @@ const Results = () => {
     const [result, setResult] = useState(null);
     const [expandedCareer, setExpandedCareer] = useState(0);
     const [loading, setLoading] = useState(true);
+    const [currentUser, setCurrentUser] = useState(null);
     const hasTrackedView = useRef(false);
 
-    // FIXED: Result Persistence Logic (Firestore Only - No LocalStorage)
+    // FIXED: Result Persistence Logic (Supabase)
     useEffect(() => {
         if (location.state?.result) {
             // New result came in -> Set it immediately
             setResult(location.state.result);
             setLoading(false);
 
-            // Track results view
-            if (!hasTrackedView.current) {
-                const user = auth.currentUser;
+            // Track results view - we track with currentUser when available
+            if (!hasTrackedView.current && currentUser) {
                 const careers = location.state.result?.topCareers?.map(c => c.pathName || c.title) || [];
-                trackResultsView(user?.uid || 'guest', careers);
+                trackResultsView(currentUser.uid, careers);
                 hasTrackedView.current = true;
             }
         } else {
             // Page refresh or direct access -> Fetch latest from DB
             const fetchLatestResult = async (user) => {
-                setLoading(true);
-
                 setLoading(true);
 
                 try {
@@ -57,16 +54,20 @@ const Results = () => {
                     }
                 } catch (error) {
                     console.error("❌ Error fetching latest result:", error);
-                    // On error, we might want to stay or go back. 
-                    // Safest is go to assessment so they can try again.
                     navigate('/assessment');
                 } finally {
                     setLoading(false);
                 }
             };
 
-            const unsubscribe = auth.onAuthStateChanged((user) => {
-                if (user) {
+            const { data: { subscription } } = onAuthStateChange((event, session) => {
+                if (session?.user) {
+                    const user = {
+                        uid: session.user.id,
+                        email: session.user.email,
+                        displayName: session.user.user_metadata?.name || session.user.email?.split('@')[0] || 'Student'
+                    };
+                    setCurrentUser(user);
                     fetchLatestResult(user);
                 } else {
                     // Not logged in -> cannot fetch DB
@@ -74,9 +75,9 @@ const Results = () => {
                 }
             });
 
-            return () => unsubscribe();
+            return () => subscription.unsubscribe();
         }
-    }, [location, navigate]);
+    }, [location, navigate, currentUser]);
 
     // 显示 Loading UI instead of blank white screen
     if (loading) {
@@ -227,8 +228,7 @@ const Results = () => {
 
                                     // Track career expansion
                                     if (isExpanding) {
-                                        const user = auth.currentUser;
-                                        trackCareerExpanded(user?.uid || 'guest', career.pathName || career.title);
+                                        trackCareerExpanded(currentUser?.uid || 'guest', career.pathName || career.title);
                                     }
                                 }}
                                 style={{ padding: '24px', cursor: 'pointer', background: idx === expandedCareer ? 'var(--bg-subtle)' : 'transparent' }}
@@ -390,8 +390,7 @@ const Results = () => {
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     onClick={() => {
-                                        const user = auth.currentUser;
-                                        trackResourceClick(user?.uid || 'guest', res.type, res.link || res.name);
+                                        trackResourceClick(currentUser?.uid || 'guest', res.type, res.link || res.name);
                                     }}
                                     style={{
                                         textDecoration: 'none',

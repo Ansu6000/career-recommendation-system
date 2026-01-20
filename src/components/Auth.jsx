@@ -1,8 +1,12 @@
 import { useState } from 'react';
-import { auth, db } from '../firebase';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, signOut, sendPasswordResetEmail, updateProfile } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
+import {
+    signUp,
+    signIn,
+    resetPassword,
+    resendVerification,
+    saveUserProfile
+} from '../services/supabase';
 import { Mail, Lock, User, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import CustomDropdown from './CustomDropdown';
 import { trackEvent, startSession, ANALYTICS_EVENTS } from '../services/analytics';
@@ -24,7 +28,7 @@ const Auth = () => {
     const startDemoMode = () => {
         setLoading(true);
         setTimeout(() => {
-            const mockUser = { uid: "mock-guest", email: "guest@example.com", displayName: name || "Guest Student" };
+            const mockUser = { id: "mock-guest", email: "guest@example.com", user_metadata: { name: name || "Guest Student" } };
             localStorage.setItem("mockUser", JSON.stringify(mockUser));
             localStorage.setItem("userProfile", JSON.stringify({ name: name || "Guest", board, grade }));
             setLoading(false);
@@ -42,6 +46,7 @@ const Auth = () => {
         e.preventDefault();
         setLoading(true);
         setError('');
+        setShowResend(false);
 
         if (!isLogin) {
             const pwdError = validatePassword(password);
@@ -52,107 +57,80 @@ const Auth = () => {
             }
         }
 
-        const apiKey = import.meta.env.VITE_FIREBASE_API_KEY;
-        const isInvalidKey = !apiKey || apiKey === "your_api_key" || !apiKey.startsWith("AIza");
-
-        if (isInvalidKey) {
+        // Check if Supabase is configured
+        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+        if (!supabaseUrl || supabaseUrl === "your_supabase_url") {
             startDemoMode();
             return;
         }
 
-        // Timeout Promise (10s limit)
-        const timeoutPromise = new Promise((_, reject) =>
-            setTimeout(() => reject(new Error("Network timeout. Check connection.")), 10000)
-        );
-
         try {
             if (isLogin) {
-                const userCredential = await Promise.race([
-                    signInWithEmailAndPassword(auth, email, password),
-                    timeoutPromise
-                ]);
+                // SIGN IN
+                const result = await signIn(email, password);
 
-                if (!userCredential.user.emailVerified) {
-                    await signOut(auth);
-                    setError("Email not verified. Check your inbox (and Spam).");
-                    setShowResend(true);
+                if (!result.success) {
+                    // Handle specific error cases
+                    if (result.error.includes('Invalid login credentials')) {
+                        setError("Invalid email or password. Please try again.");
+                    } else if (result.error.includes('Email not confirmed')) {
+                        setError("Email not verified. Check your inbox (and Spam).");
+                        setShowResend(true);
+                    } else {
+                        setError(result.error);
+                    }
                     return;
                 }
 
                 // Track successful login
-                await startSession(userCredential.user.uid);
-                trackEvent(ANALYTICS_EVENTS.USER_LOGIN, userCredential.user.uid, {
+                await startSession(result.data.user.id);
+                trackEvent(ANALYTICS_EVENTS.USER_LOGIN, result.data.user.id, {
                     method: 'email',
-                    email: userCredential.user.email,
+                    email: result.data.user.email,
                 });
 
                 navigate('/');
             } else {
-                const userCredential = await Promise.race([
-                    createUserWithEmailAndPassword(auth, email, password),
-                    timeoutPromise
-                ]);
-                const user = userCredential.user;
+                // SIGN UP
+                const result = await signUp(email, password, {
+                    name,
+                    grade,
+                    board
+                });
 
-                // Update Display Name
-                try {
-                    await updateProfile(user, { displayName: name });
-                    await user.reload(); // Force refresh to ensure name persists
-                } catch (error) {
-                    console.error("Failed to set display name:", error);
+                if (!result.success) {
+                    if (result.error.includes('already registered')) {
+                        setError("Email already in use. Please login instead.");
+                    } else {
+                        setError(result.error);
+                    }
+                    return;
                 }
 
-                // Send Verification Email
-                await sendEmailVerification(user);
-
-                // NON-BLOCKING: Save profile in background
-                setDoc(doc(db, "users", user.uid), {
-                    uid: user.uid,
+                // Save profile to profiles table (fire-and-forget)
+                saveUserProfile(result.data.user.id, {
                     name,
                     email,
-                    board,
                     grade,
-                    createdAt: new Date()
-                }).catch(err => console.warn("Background profile save failed:", err));
-
-                // Sign out immediately so they can't access the app
-                await signOut(auth);
+                    board
+                }).catch(err => console.warn("Profile save failed:", err));
 
                 // Track new signup
-                trackEvent(ANALYTICS_EVENTS.USER_SIGNUP, user.uid, {
+                await startSession(result.data.user.id);
+                trackEvent(ANALYTICS_EVENTS.USER_SIGNUP, result.data.user.id, {
                     method: 'email',
-                    email: user.email,
+                    email: email,
                     grade,
                     board,
                 });
 
-                // Clear form data so it doesn't "autofill" the login screen
-                setEmail('');
-                setPassword('');
-                setName('');
-                // Keep board/grade as defaults or clear them if desired
-
-                // Unlock UI immediately
-                setLoading(false);
-                alert("Account created! We have sent a verification LINK to " + email + ".\n\nPlease check your inbox and SPAM folder. You must verify before logging in.");
-                setIsLogin(true);
+                // Auto-login after signup (no email verification needed)
+                navigate('/');
                 return;
             }
         } catch (err) {
             console.error("Auth Error:", err);
-
-            if (err.message.includes('timeout')) {
-                setError("Connection timed out. Please try again or check your internet.");
-            } else if (err.message.includes('api-key')) {
-                startDemoMode();
-                return;
-            } else if (err.code === 'auth/configuration-not-found') {
-                setError("Sign-in not enabled in Firebase Console.");
-            } else if (err.code === 'auth/email-already-in-use') {
-                setError("Email already in use. Please login.");
-            } else {
-                setError(err.message.replace('Firebase: ', ''));
-            }
+            setError(err.message || "An unexpected error occurred. Please try again.");
         } finally {
             setLoading(false);
         }
@@ -161,19 +139,18 @@ const Auth = () => {
     const handleResendVerification = async () => {
         setLoading(true);
         try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            await sendEmailVerification(userCredential.user);
-            await signOut(auth);
-            alert("Verification link resent! Please check your Spam/Junk folder.");
-            setError("Link sent. Please verify and login.");
-            setShowResend(false);
+            const result = await resendVerification(email);
+
+            if (result.success) {
+                alert("Verification link sent! 📧\n\nPlease check your inbox and Spam folder.");
+                setError("Verification email sent. Please verify and login.");
+                setShowResend(false);
+            } else {
+                alert("Failed to resend: " + result.error);
+            }
         } catch (err) {
             console.error(err);
-            if (err.code === 'auth/too-many-requests') {
-                alert("Too many requests. Please wait a moment.");
-            } else {
-                alert("Failed to resend. Please try logging in again.");
-            }
+            alert("Failed to resend. Please try again later.");
         } finally {
             setLoading(false);
         }
@@ -183,14 +160,18 @@ const Auth = () => {
         e.preventDefault();
         setLoading(true);
         try {
-            await sendPasswordResetEmail(auth, email);
-            alert("Password Reset URL sent to " + email + ". Check your inbox.");
-            setIsResetting(false);
-            setIsLogin(true);
+            const result = await resetPassword(email);
+
+            if (result.success) {
+                alert("Password reset link sent to " + email + ".\n\nCheck your inbox.");
+                setIsResetting(false);
+                setIsLogin(true);
+            } else {
+                alert("Error: " + result.error);
+            }
         } catch (err) {
             console.error(err);
-            if (err.code === 'auth/user-not-found') alert("No user found with this email.");
-            else alert("Error: " + err.message);
+            alert("Error: " + err.message);
         } finally {
             setLoading(false);
         }
@@ -198,7 +179,7 @@ const Auth = () => {
 
     return (
         <div className="auth-container">
-            <div className="card" style={{ maxWidth: '400px' }}> {/* Forced width for login card */}
+            <div className="card" style={{ maxWidth: '400px' }}>
 
                 {isResetting ? (
                     <>
@@ -370,7 +351,7 @@ const Auth = () => {
                         <p style={{ marginTop: '24px', fontSize: '0.9rem', textAlign: 'center' }}>
                             {isLogin ? "Don't have an account? " : "Already have an account? "}
                             <button
-                                onClick={() => setIsLogin(!isLogin)}
+                                onClick={() => { setIsLogin(!isLogin); setError(''); setShowResend(false); }}
                                 className="btn-text"
                                 style={{ display: 'inline', padding: 0, color: 'var(--primary)', fontWeight: '600', textDecoration: 'none' }}
                             >
@@ -393,4 +374,3 @@ const Auth = () => {
 };
 
 export default Auth;
-

@@ -35,7 +35,7 @@ Pathwise addresses the challenge faced by students when selecting career paths, 
 |----------|------------|
 | Frontend | React 18, Vite |
 | Styling | Vanilla CSS with CSS Variables |
-| Authentication | Firebase Auth (Email/Password) |
+| Authentication | Supabase Auth (Email/Password) |
 | Database | Supabase (PostgreSQL) |
 | AI | Groq API (LLaMA 3 70B) |
 | Icons | Lucide React |
@@ -48,8 +48,7 @@ Pathwise addresses the challenge faced by students when selecting career paths, 
 
 - Node.js 18+
 - npm or yarn
-- Firebase account (for authentication)
-- Supabase account (for database)
+- Supabase account (for database + authentication)
 - Groq API key (for AI features)
 
 ### Installation
@@ -69,20 +68,15 @@ Pathwise addresses the challenge faced by students when selecting career paths, 
    
    Create a `.env` file in the root directory:
    ```env
-   # Firebase Configuration
-   VITE_FIREBASE_API_KEY=your_firebase_api_key
-   VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
-   VITE_FIREBASE_PROJECT_ID=your_project_id
-   VITE_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
-   VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-   VITE_FIREBASE_APP_ID=your_app_id
-
-   # Supabase Configuration
+   # Supabase Configuration (Database + Auth)
    VITE_SUPABASE_URL=your_supabase_url
    VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 
    # Groq AI Configuration
    VITE_GROQ_API_KEY=your_groq_api_key
+
+   # Admin email for analytics dashboard access
+   VITE_ADMIN_EMAIL=your_admin_email@example.com
    ```
 
 4. Run the development server
@@ -96,17 +90,14 @@ Pathwise addresses the challenge faced by students when selecting career paths, 
 
 ## API Configuration
 
-### Firebase Setup
-1. Go to Firebase Console (https://console.firebase.google.com/)
-2. Create a new project
-3. Enable Authentication with Email/Password provider
-4. Go to Project Settings and copy the web app configuration
-5. Add the configuration values to your `.env` file
-
 ### Supabase Setup
 1. Go to Supabase (https://supabase.com/)
 2. Create a new project
-3. Create the following table:
+3. Enable **Email Auth** in Authentication → Providers
+4. Customize email templates in Authentication → Email Templates
+5. Run the SQL from `supabase_auth_setup.sql` to set up profiles table
+6. Run the SQL from `supabase_analytics_schema.sql` for analytics
+7. Create the assessments table:
 
 ```sql
 CREATE TABLE assessments (
@@ -124,7 +115,7 @@ CREATE TABLE assessments (
 CREATE INDEX idx_assessments_user_id ON assessments(user_id);
 ```
 
-4. Copy the Project URL and Anon Key to your `.env` file
+8. Copy the Project URL and Anon Key to your `.env` file
 
 ### Groq API Setup
 1. Go to Groq Console (https://console.groq.com/)
@@ -140,7 +131,7 @@ pathwise/
 ├── src/
 │   ├── components/
 │   │   ├── Assessment.jsx        # Quiz/Assessment flow
-│   │   ├── Auth.jsx              # Login/Signup page
+│   │   ├── Auth.jsx              # Login/Signup page (Supabase Auth)
 │   │   ├── Results.jsx           # Career blueprint display
 │   │   ├── AnalyticsDashboard.jsx # Analytics visualization
 │   │   └── CustomDropdown.jsx    # Custom dropdown component
@@ -149,10 +140,10 @@ pathwise/
 │   ├── services/
 │   │   ├── analytics.js          # Analytics tracking service
 │   │   ├── gemini.js             # AI integration (Groq API)
-│   │   └── supabase.js           # Supabase database service
+│   │   └── supabase.js           # Supabase database + auth service
 │   ├── App.jsx                   # Main app + Homepage
-│   ├── firebase.js               # Firebase configuration
 │   └── index.css                 # Global styles
+├── supabase_auth_setup.sql       # SQL schema for auth/profiles
 ├── supabase_analytics_schema.sql # SQL schema for analytics tables
 ├── PRD.md                        # Product Requirements Document
 ├── .env                          # Environment variables
@@ -227,7 +218,6 @@ This project is licensed under the MIT License. See the LICENSE file for details
 ## Acknowledgments
 
 - Groq for providing fast AI inference
-- Firebase for authentication services
-- Supabase for database infrastructure
+- Supabase for database and authentication infrastructure
 - Lucide for icon library
 - Vite for build tooling

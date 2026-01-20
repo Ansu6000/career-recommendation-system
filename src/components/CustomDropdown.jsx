@@ -15,10 +15,23 @@ const CustomDropdown = ({
     onToggle // Optional callback for controlled state
 }) => {
     const [localIsOpen, setLocalIsOpen] = useState(false);
+    const [openUpward, setOpenUpward] = useState(false);
     const isOpen = controlledIsOpen !== undefined ? controlledIsOpen : localIsOpen;
+
+    const dropdownRef = useRef(null);
+    const triggerRef = useRef(null);
 
     const toggleOpen = (newState) => {
         const nextState = typeof newState === 'boolean' ? newState : !isOpen;
+
+        // Check if should open upward when opening
+        if (nextState && triggerRef.current) {
+            const rect = triggerRef.current.getBoundingClientRect();
+            const spaceBelow = window.innerHeight - rect.bottom;
+            const menuHeight = Math.min(300, options.length * 50 + 20);
+            setOpenUpward(spaceBelow < menuHeight);
+        }
+
         if (controlledIsOpen !== undefined) {
             if (onToggle) onToggle(nextState);
         } else {
@@ -26,7 +39,6 @@ const CustomDropdown = ({
             if (onToggle) onToggle(nextState);
         }
     };
-    const dropdownRef = useRef(null);
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -155,7 +167,7 @@ const CustomDropdown = ({
                         borderRadius: '16px',
                         boxShadow: 'var(--shadow-lg)',
                         zIndex: 9999, // Ensure it's on top
-                        maxHeight: '300px',
+                        maxHeight: '250px',
                         overflowY: 'auto',
                         animation: 'dropdownFadeIn 0.2s ease-out',
                         backdropFilter: 'blur(20px)',

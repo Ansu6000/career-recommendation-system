@@ -545,6 +545,43 @@ export const getCompletionRate = async () => {
 // ============================================================================
 
 /**
+ * Get total unique registered users (based on email/user_id from signup events)
+ */
+export const getTotalUniqueUsers = async () => {
+    if (!supabase) return { success: false, count: 0 };
+
+    try {
+        // Get all signup events - each signup = 1 unique user
+        const { data: signupData, error: signupError } = await supabase
+            .from(ANALYTICS_TABLE)
+            .select('user_id, properties')
+            .eq('event_type', ANALYTICS_EVENTS.USER_SIGNUP);
+
+        if (signupError) throw signupError;
+
+        // Count unique user IDs from signups
+        const uniqueUserIds = [...new Set(signupData.map(d => d.user_id))];
+
+        // Also extract unique emails from properties (more reliable)
+        const uniqueEmails = [...new Set(
+            signupData
+                .map(d => d.properties?.email)
+                .filter(email => email && email !== 'undefined')
+        )];
+
+        return {
+            success: true,
+            count: Math.max(uniqueUserIds.length, uniqueEmails.length),
+            userIds: uniqueUserIds.length,
+            emails: uniqueEmails.length,
+        };
+    } catch (error) {
+        console.error('Error fetching total unique users:', error);
+        return { success: false, count: 0, error: error.message };
+    }
+};
+
+/**
  * Get all key metrics for a dashboard
  */
 export const getDashboardMetrics = async () => {
@@ -560,6 +597,7 @@ export const getDashboardMetrics = async () => {
         categoryDist,
         d1Retention,
         d7Retention,
+        totalUsers,
     ] = await Promise.all([
         getDailyActiveUsers(today),
         getMonthlyActiveUsers(today.getFullYear(), today.getMonth() + 1),
@@ -570,6 +608,7 @@ export const getDashboardMetrics = async () => {
         getCategoryDistribution(),
         getRetentionRate(new Date(today.getTime() - 86400000), 1), // D1
         getRetentionRate(new Date(today.getTime() - 7 * 86400000), 7), // D7
+        getTotalUniqueUsers(),
     ]);
 
     return {
@@ -577,6 +616,7 @@ export const getDashboardMetrics = async () => {
             dau: dau.count,
             mau: mau.count,
             stickiness: stickiness.percentage,
+            totalUsers: totalUsers.count, // NEW: Total registered users
         },
         retention: {
             d1: d1Retention.retentionRate,

@@ -8,7 +8,7 @@
 
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { auth } from '../firebase';
+import { onAuthStateChange } from '../services/supabase';
 import {
     getDashboardMetrics,
     getDailyActiveUsers,
@@ -19,6 +19,7 @@ import {
     getCompletionRate,
     getTopCareers,
     getCategoryDistribution,
+    getTotalUniqueUsers,
 } from '../services/analytics';
 import {
     ArrowLeft,
@@ -61,6 +62,7 @@ const AnalyticsDashboard = () => {
                 completionRate,
                 topCareers,
                 categoryDist,
+                totalUsers,
             ] = await Promise.all([
                 getDailyActiveUsers(new Date()),
                 getMonthlyActiveUsers(new Date().getFullYear(), new Date().getMonth() + 1),
@@ -69,6 +71,7 @@ const AnalyticsDashboard = () => {
                 getCompletionRate(),
                 getTopCareers(5),
                 getCategoryDistribution(),
+                getTotalUniqueUsers(),
             ]);
 
             setMetrics({
@@ -79,6 +82,7 @@ const AnalyticsDashboard = () => {
                 completionRate,
                 topCareers,
                 categoryDist,
+                totalUsers,
             });
             setError(null);
         } catch (err) {
@@ -92,10 +96,10 @@ const AnalyticsDashboard = () => {
 
     useEffect(() => {
         // Check if user is logged in AND is admin
-        const unsubscribe = auth.onAuthStateChanged((user) => {
-            if (!user) {
+        const { data: { subscription } } = onAuthStateChange((event, session) => {
+            if (!session?.user) {
                 navigate('/login');
-            } else if (user.email !== ADMIN_EMAIL) {
+            } else if (session.user.email !== ADMIN_EMAIL) {
                 // Not admin - redirect to home
                 console.warn('⚠️ Analytics access denied: Not an admin');
                 navigate('/');
@@ -105,7 +109,7 @@ const AnalyticsDashboard = () => {
             }
         });
 
-        return () => unsubscribe();
+        return () => subscription.unsubscribe();
     }, [navigate]);
 
     // Styles
@@ -266,6 +270,28 @@ const AnalyticsDashboard = () => {
 
             {/* Main Metrics Grid */}
             <div style={gridStyle}>
+                {/* Total Unique Users Card */}
+                <div style={metricCardStyle}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <div style={iconContainerStyle('#F59E0B')}>
+                            <Users size={24} color="#F59E0B" />
+                        </div>
+                        <span style={{
+                            fontSize: '0.75rem',
+                            fontWeight: '700',
+                            textTransform: 'uppercase',
+                            color: 'var(--text-muted)',
+                            letterSpacing: '0.05em',
+                        }}>
+                            All Time
+                        </span>
+                    </div>
+                    <div>
+                        <div style={metricValueStyle}>{metrics?.totalUsers?.count || 0}</div>
+                        <div style={metricLabelStyle}>Total Registered Users</div>
+                    </div>
+                </div>
+
                 {/* DAU Card */}
                 <div style={metricCardStyle}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

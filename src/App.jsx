@@ -1,11 +1,11 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
-import { auth } from './firebase';
-import { getAssessments } from './services/supabase';
+import { onAuthStateChange, getAssessments, signOut as supabaseSignOut } from './services/supabase';
 import Auth from './components/Auth';
 import Assessment from './components/Assessment';
 import Results from './components/Results';
 import AnalyticsDashboard from './components/AnalyticsDashboard';
+import ResetPassword from './components/ResetPassword';
 
 import { Zap, Target, GraduationCap, Lightbulb, LogOut, ArrowRight, ArrowDown, History, Eye, Loader, BarChart3 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -66,7 +66,7 @@ const AnimatedSection = ({ children, delay = 0, style = {} }) => {
 
 const Welcome = () => {
   const [user, setUser] = useState(null);
-  const [pastAssessments, setPastAssessments] = useState([]); // State for history
+  const [pastAssessments, setPastAssessments] = useState([]);
   const [initializing, setInitializing] = useState(true);
   const [historyLoading, setHistoryLoading] = useState(false);
   const navigate = useNavigate();
@@ -75,25 +75,37 @@ const Welcome = () => {
     // Restore session on page load
     restoreSession();
 
-    const unsubscribeAuth = auth.onAuthStateChanged(async (u) => {
+    // Subscribe to Supabase auth changes
+    const { data: { subscription } } = onAuthStateChange(async (event, session) => {
       setInitializing(false);
 
-      if (u) {
+      if (session?.user) {
+        const u = session.user;
+
         // Start or restore analytics session
         const existingSession = restoreSession();
         if (!existingSession) {
-          await startSession(u.uid);
+          await startSession(u.id);
         }
 
         // Track page view
-        trackEvent(ANALYTICS_EVENTS.PAGE_VIEW, u.uid, {
+        trackEvent(ANALYTICS_EVENTS.PAGE_VIEW, u.id, {
           page: 'home',
           url: window.location.pathname,
         });
-        setUser(u);
+
+        // Transform Supabase user to expected format
+        const transformedUser = {
+          uid: u.id,
+          email: u.email,
+          displayName: u.user_metadata?.name || u.email?.split('@')[0] || 'Student',
+          emailVerified: !!u.email_confirmed_at
+        };
+
+        setUser(transformedUser);
         setHistoryLoading(true);
 
-        const storageKey = `assessments_${u.uid}`;
+        const storageKey = `assessments_${u.id}`;
 
         // STEP 1: Load from localStorage FIRST (instant)
         try {
@@ -110,9 +122,8 @@ const Welcome = () => {
 
         // STEP 2: Fetch from Supabase (cross-device sync)
         try {
-          const result = await getAssessments(u.uid);
+          const result = await getAssessments(u.id);
           if (result.success && result.data.length > 0) {
-            // Merge Supabase data with local data
             const localData = localStorage.getItem(storageKey);
             const localAssessments = localData ? JSON.parse(localData) : [];
 
@@ -124,7 +135,6 @@ const Welcome = () => {
             const merged = [...result.data, ...localOnlyItems];
             merged.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-            // Update localStorage with merged data
             localStorage.setItem(storageKey, JSON.stringify(merged));
             setPastAssessments(merged);
             console.log("✅ Synced", result.data.length, "from Supabase +", localOnlyItems.length, "local");
@@ -145,23 +155,19 @@ const Welcome = () => {
       }
     });
 
-    return () => unsubscribeAuth();
+    return () => subscription.unsubscribe();
   }, []);
 
   const handleLogout = async () => {
-    const currentUser = auth.currentUser;
-
     // Track logout event
-    if (currentUser) {
-      await trackEvent(ANALYTICS_EVENTS.USER_LOGOUT, currentUser.uid, {
+    if (user) {
+      await trackEvent(ANALYTICS_EVENTS.USER_LOGOUT, user.uid, {
         sessionDuration: Date.now(),
       });
-      await endSession(currentUser.uid);
+      await endSession(user.uid);
     }
 
-    if (auth) auth.signOut();
-    // DON'T clear localStorage - keep assessment data intact!
-    // localStorage.clear(); // REMOVED - this was wiping all user data
+    await supabaseSignOut();
     setUser(null);
     setPastAssessments([]);
   };
@@ -313,7 +319,6 @@ const Welcome = () => {
         </div>
       </section>
 
-      {/* ============ CAREERS GENERATED DASHBOARD ============ */}
       {/* ============ CAREERS GENERATED DASHBOARD ============ */}
       {user && (
         <section style={{
@@ -579,6 +584,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Welcome />} />
           <Route path="/login" element={<Auth />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/assessment" element={<Assessment />} />
           <Route path="/results" element={<Results />} />
           <Route path="/analytics" element={<AnalyticsDashboard />} />

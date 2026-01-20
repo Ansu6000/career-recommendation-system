@@ -2,8 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { questions, sections } from '../data/questions';
 import { generateCareerPath, calculateWeightedScores, getTopCategories } from '../services/gemini';
-import { auth } from '../firebase';
-import { saveAssessment, getAssessments } from '../services/supabase';
+import { saveAssessment, getAssessments, onAuthStateChange, getCurrentUser } from '../services/supabase';
 import { ArrowRight, ArrowLeft, CheckCircle, User, Users, Lock, RefreshCw } from 'lucide-react';
 import CustomDropdown from './CustomDropdown';
 import {
@@ -32,6 +31,7 @@ const Assessment = () => {
     const [loadingMsg, setLoadingMsg] = useState("Initializing AI Analysis...");
     const [assessmentCount, setAssessmentCount] = useState(0);
     const [userProfile, setUserProfile] = useState({ name: '', grade: '', board: '' });
+    const [currentUser, setCurrentUser] = useState(null);
 
     // CONFIG FORM
     const [configType, setConfigType] = useState(null); // 'self' or 'other'
@@ -115,13 +115,19 @@ const Assessment = () => {
             }
         };
 
-        const unsubscribe = auth.onAuthStateChanged((user) => {
+        const { data: { subscription } } = onAuthStateChange((event, session) => {
+            const user = session?.user ? {
+                uid: session.user.id,
+                email: session.user.email,
+                displayName: session.user.user_metadata?.name || session.user.email?.split('@')[0] || 'Student'
+            } : null;
+            setCurrentUser(user);
             initializeAssessment(user);
         });
 
         return () => {
             isMounted = false;
-            unsubscribe();
+            subscription.unsubscribe();
         };
     }, [isRetake, previousAnswers, location.state]);
 
@@ -147,11 +153,9 @@ const Assessment = () => {
 
     // 2. HANDLERS
     const startAssessment = async (type) => {
-        const user = auth.currentUser;
-
         // Track assessment start
-        await trackAssessmentStart(user?.uid || 'guest', type);
-        trackEvent(ANALYTICS_EVENTS.ASSESSMENT_STARTED, user?.uid || 'guest', {
+        await trackAssessmentStart(currentUser?.uid || 'guest', type);
+        trackEvent(ANALYTICS_EVENTS.ASSESSMENT_STARTED, currentUser?.uid || 'guest', {
             assessmentType: type,
             isRetake: false,
         });
@@ -172,20 +176,17 @@ const Assessment = () => {
             return;
         }
 
-        const user = auth.currentUser;
-        await trackAssessmentStart(user?.uid || 'guest', 'other');
+        await trackAssessmentStart(currentUser?.uid || 'guest', 'other');
         questionStartTime.current = Date.now();
 
         setMode('questions');
     };
 
     const handleSelect = async (questionId, option) => {
-        const user = auth.currentUser;
-
         // Track time spent on previous question
         if (currentQuestionId.current !== null && currentQuestionId.current !== questionId) {
             const timeSpent = Date.now() - questionStartTime.current;
-            await trackQuestionAnswer(user?.uid || 'guest', currentQuestionId.current, answers[currentQuestionId.current], timeSpent);
+            await trackQuestionAnswer(currentUser?.uid || 'guest', currentQuestionId.current, answers[currentQuestionId.current], timeSpent);
         }
 
         // Update timing for new question
@@ -266,8 +267,7 @@ const Assessment = () => {
 
         // 2. SAVE TO LOCALSTORAGE FIRST (100% reliable)
         try {
-            const user = auth.currentUser;
-            const storageKey = user ? `assessments_${user.uid}` : 'assessments_guest';
+            const storageKey = currentUser ? `assessments_${currentUser.uid}` : 'assessments_guest';
 
             // Get existing assessments
             const existingData = localStorage.getItem(storageKey);
@@ -304,12 +304,11 @@ const Assessment = () => {
         }
 
         // 3. SAVE TO SUPABASE (cross-device sync)
-        const user = auth.currentUser;
-        if (user) {
+        if (currentUser) {
             // Fire-and-forget - don't block navigation
             (async () => {
                 try {
-                    const result = await saveAssessment(user.uid, {
+                    const result = await saveAssessment(currentUser.uid, {
                         id: assessmentIdLocal,
                         title: resultTitle,
                         result: careerData,
@@ -331,7 +330,7 @@ const Assessment = () => {
 
         // 5. TRACK ANALYTICS
         const topCategory = careerData?.topCareers?.[0]?.pathName || 'unknown';
-        await trackAssessmentComplete(user?.uid || 'guest', {
+        await trackAssessmentComplete(currentUser?.uid || 'guest', {
             careers: careerData?.topCareers,
             topCategory,
         });
