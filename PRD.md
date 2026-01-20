@@ -54,7 +54,7 @@ A 15-question assessment that:
 
 | Feature | Description |
 |---------|-------------|
-| User Authentication | Email/password signup and login via Firebase |
+| User Authentication | Email/password signup and login via Supabase Auth |
 | Career Assessment | 15 questions across aptitude, personality, and goals |
 | AI Career Generation | 3 career recommendations with match percentages |
 | Career Roadmap | Stream selection, entrance exams, degree path |
@@ -79,7 +79,7 @@ A 15-question assessment that:
 |-------|------------|
 | Frontend | React 18 + Vite |
 | Styling | Vanilla CSS |
-| Auth | Firebase Authentication |
+| Auth | Supabase Auth |
 | Database | Supabase (PostgreSQL) |
 | AI | Groq API (LLaMA 3 70B) |
 | Hosting | Vercel |
