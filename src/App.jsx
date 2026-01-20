@@ -577,9 +577,27 @@ const Welcome = () => {
 };
 
 
+// Global auth state listener
+const AuthListener = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const { data: { subscription } } = onAuthStateChange((event, session) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        navigate('/reset-password');
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
+
+  return null;
+};
+
 function App() {
   return (
     <Router>
+      <AuthListener />
       <div className="app-container">
         <Routes>
           <Route path="/" element={<Welcome />} />
