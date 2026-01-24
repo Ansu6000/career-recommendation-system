@@ -2,7 +2,7 @@
 
 ## AI-Powered Career Guidance for Students
 
-A comprehensive career counseling platform designed specifically for students in Class 10-12. The platform uses AI to analyze interests, personality, and goals to create personalized career blueprints.
+A comprehensive career counseling platform designed specifically for students in Class 11-12. The platform uses AI to analyze interests, personality, and goals to create personalized career blueprints.
 
 ---
 
